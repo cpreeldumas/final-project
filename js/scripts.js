@@ -24,7 +24,7 @@ const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v11', // dark basemap
     center: [-73.96143, 40.73941], // starting position [lng, lat]
-    zoom: 10, // starting zoom
+    zoom: 10.2, // starting zoom
 });
 
 
@@ -55,13 +55,13 @@ map.on('load', function () {
             'fill-color': [
                 'match',
                 ['get', 'qd_2024'],
-                'stable_highrent', '#757FBD',
-                'stable_lowrent', '#BDC4E3',
-                'disadvantaged', '#F89638',
-                'equipped', '#F9E2B4',
-                '#ccc'
+                'stable_rentb', '#757FBD',
+                'stable', '#BDC4E3',
+                'atrisk', '#F89638',
+                'monitor', '#F9E2B4',
+                '#6e6e6e'
             ],
-            'fill-opacity': 0.7
+            'fill-opacity': 0.9
 
         }
     },
@@ -106,7 +106,7 @@ map.on('load', function () {
         const tableData = {
             "Census Tract": e.features[0].properties.GEOID,
             "Median GHG Intensity": `${e.features[0].properties.mdn_ghg} kgCO2e/ft2`,
-            "Rent Burden": `Median rent is ${e.features[0].properties.rntbrdE}% of household income`
+            "Rent Burden": `Median rent is ${e.features[0].properties.mdrntnE}% of household income`
         };
 
         const table = document.getElementById('data-table');
