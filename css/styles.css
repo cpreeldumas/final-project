@@ -18,22 +18,25 @@ body {
     overflow: hidden;
 }
 
-nav {
-    padding: 1rem;
-    border-bottom: 1px solid #000;
-    display: flex;
-}
-
 .nav-links {
-    flex-grow: 1;
-    justify-content: end;
-    display: flex;
+    justify-content: start; /* Align buttons to the start (left) */
+    margin-left: 20px; /* Add some margin to the left */
 }
 
 .nav-link {
     display: inline-block;
     margin-right: 20px;
     font-size: .9rem;
+    background-color: #ccc;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nav-link:hover {
+    background-color: #bbb;
 }
 
 #content-container {
@@ -43,11 +46,40 @@ nav {
 }
 
 #sidebar {
-    width: 348px;
-    padding: 1rem;
-    font-size: 0.9rem;
-    overflow-y: scroll;
-    box-sizing: border-box;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1;
+    width: 300px;
+    background: #ececec;
+    padding: 15px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 0px 2px 2px rgb(116 116 116)
+    -moz-box-shadow: 0px 0px 2px 2px rgb(116 116 116)
+    box-shadow: 0px 0px 2px 2px rgb(116 116 116)
+}
+
+#sidebar h1 {
+    font-size: 24px
+}
+
+#sidebar h2 {
+    font-size: 20px
+}
+
+#sidebar p {
+    font-size: 14px;
+}
+
+
+#sidebar h1 {
+    font-size: 20px;
+    margin-bottom: 5px; /* Add some bottom margin */
+}
+
+#sidebar h2 {
+    font-size:16px;
+    margin-top: 0; /* Remove top margin */
 }
 
 #map {
