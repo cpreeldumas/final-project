@@ -24,7 +24,7 @@ const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v11', // dark basemap
     center: [-73.96143, 40.73941], // starting position [lng, lat]
-    zoom: 10.2, // starting zoom
+    zoom: 11, // starting zoom
 });
 
 
@@ -33,6 +33,11 @@ map.addControl(new mapboxgl.NavigationControl());
 // when the map is finished it's initial load, add sources and layers.
 map.on('load', function () {
 
+     // add a geojson source for the borough boundaries
+     map.addSource('borough-boundaries', {
+        type: 'geojson',
+        data: 'data/borough-boundaries-simplified.geojson',
+    })
 
     // add a geojson source for choropleth
     map.addSource('map-data-tract', {
@@ -67,6 +72,15 @@ map.on('load', function () {
     },
     labelLayerId
 )
+  // add borough outlines after the fill layer, so the outline is "on top" of the fill
+  map.addLayer({
+    id: 'borough-boundaries-line',
+    type: 'line',
+    source: 'borough-boundaries',
+    paint: {
+        'line-color': '#ccc'
+    }
+})
 
     // Add a layer for highlighting the clicked polygon
     map.addLayer({
@@ -189,6 +203,26 @@ map.on('load', function () {
 
 
 })
+
+let currentVariable = 'qd_2024';
+
+function changeLayer(variable) {
+    currentVariable = variable;
+    updateMapLayer();
+}
+
+function updateMapLayer() {
+    // Update the map layer based on the current variable
+    map.setPaintProperty('map-data-tract-fill', 'fill-color', [
+        'match',
+        ['get', currentVariable],
+        'stable_rentb', '#757FBD',
+        'stable', '#BDC4E3',
+        'atrisk', '#F89638',
+        'monitor', '#F9E2B4',
+        '#6e6e6e'
+    ]);
+}
 
 // Fly to Random "At Risk" Tract
 /*function flyToRandomRisk() {

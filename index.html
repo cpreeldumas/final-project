@@ -16,8 +16,8 @@
         <div class="nav-links">
             <button class="nav-link" onclick="openAboutPopup()">About</button>
             <button class="nav-link" onclick="openMethodsPopup()">Methods</button>
-            <button class="nav-link" href="https://github.com/cpreeldumas/class-5-project" target="_blank"
-                rel="noopener noreferrer">Source Code</button>
+            <a class="nav-link" href="https://github.com/cpreeldumas/final-project" target="_blank"
+                rel="noopener noreferrer">Source Code</a>
         </div>
 
         <div id="nav-about-popup" class="nav-popup">
@@ -47,19 +47,12 @@
                         href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law
                         97</a>-covered multifamily housing buildings into four quadrants by their level of rent burden
                     and greenhouse gas emissions. </p>
-                <p>High-rent-burden tracts are defined as tracts where median gross rent is 30% or more of household
-                    income, and high-emission-tracts are defined as tracts where the median Greenhouse Gas (GHG)
-                    intensity is above Local Law 97's 2024 cap of 6.75 kg of CO2 per ft2. </p>
                 <p>While LL97 is critical to decarbonizing NYC's housing stock, tracts with both high rent burden and
                     high emissions might be at risk of housing instability if property owners pass on compliance costs
-                    to already-burdened tenants. <a
-                        href="https://hellgatenyc.com/why-22-city-council-members-want-to-gut-the-citys-landmark-climate-law">22
-                        City Council members</a> have already signed onto a bill gutting LL97 in fear of housing
-                    affordability issues. This map can help ease this clash and direct more resources and supports to
-                    these "at risk" areas.</p>
-                <p>Click the "About" tab to learn more, or the Methods page for more detail on the data and methodology.
-                </p>
-                <p>[Insert slider for 2024 cap vs 2030 cap]</p>
+                    to already-burdened tenants.</p>
+                <p> <strong>Select a LL97 Housing Emissions Cap-Year:</strong> </p>
+                <button class="layer-button" onclick="changeLayer('qd_2024')">2024: 6.75 kgCO2/sqft</button>
+                <button class="layer-button" onclick="changeLayer('qd_2030')">2030: 3.35 kgCO2/sqft</button>
                 <p> <strong>Click a Tract to display its data below:</strong> </p>
                 <table id="data-table">
                     <!-- Table content will be dynamically added here -->
@@ -69,7 +62,7 @@
             <div id="map"></div>
 
             <div class="legend-container">
-                <div class="legend-text">Quadrants</div>
+                <div class="legend-text"></div>
                 <img src="images/legend.png">
             </div>
 

@@ -19,24 +19,28 @@ body {
 }
 
 .nav-links {
-    justify-content: start; /* Align buttons to the start (left) */
-    margin-left: 20px; /* Add some margin to the left */
+    position: absolute;
+    z-index: 10;
+    right: 36px;
+    top:10px
 }
 
 .nav-link {
     display: inline-block;
-    margin-right: 20px;
+    margin-right: 15px;
     font-size: .9rem;
-    background-color: #ccc;
+    background-color: #ececec;
     border: none;
     padding: 8px 16px;
-    border-radius: 20px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    color: inherit; /* Use the color of the parent element */
+    text-decoration: none; /* Remove underline */
 }
 
 .nav-link:hover {
-    background-color: #bbb;
+    background-color: #ececec;
 }
 
 #content-container {
@@ -47,7 +51,7 @@ body {
 
 #sidebar {
     position: absolute;
-    top: 20px;
+    top: 10px;
     left: 20px;
     z-index: 1;
     width: 300px;
@@ -107,7 +111,7 @@ body {
 }
 
 .legend-container {
-    background-color: #fff;
+    background-color: #ececec;
     position: fixed;
     bottom: 0;
     right: 0;
