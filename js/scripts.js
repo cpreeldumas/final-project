@@ -107,30 +107,60 @@ map.on('load', function () {
     map.on('click', 'map-data-tract-fill', (e) => {
         const qd_2024 = e.features[0].properties.qd_2024;
         const qd_2030 = e.features[0].properties.qd_2030;
-
+        const atrisk = e.features[0].properties.atrisk;
+    
         // Check if either qd_2024 or qd_2030 is missing
         if (qd_2024 === undefined || qd_2030 === undefined) {
             return; // Exit the function early if either value is missing
         }
-
-        // Highlight the clicked polygon
-        map.setFilter('highlighted-tract', ['==', 'GEOID', e.features[0].properties.GEOID]);
-
-        // Open a popup with information about the clicked polygon
-        new mapboxgl.Popup()
-            .setLngLat(e.lngLat)
-            .setHTML(`
-            <h3>${e.features[0].properties.NAME}</h3>
-            <p>
-                <strong>Neighborhood:</strong> ${e.features[0].properties.NTAName}<br>
-                <strong>Median GHG Intensity:</strong> ${e.features[0].properties.mdn_ghg} kgCO2e/ft2<br>
-                <strong>Rent Burdened:</strong> ${e.features[0].properties.rb}% of households<br>
-            </p>
-        `)
-            .addTo(map);
-
-        document.getElementById('sidebar').style.display = 'block';
+    
+        // Check if the clicked tract is at risk in the selected year
+        if ((currentVariable === 'qd_2024' && qd_2024 === 'atrisk') || 
+            (currentVariable === 'qd_2030' && qd_2030 === 'atrisk')) {
+    
+            // Zoom to the clicked tract
+            map.flyTo({
+                center: e.lngLat,
+                zoom: 14 // Adjust zoom level as needed
+            });
+    
+            // Remove the current fill layer
+            map.removeLayer('map-data-tract-fill');
+    
+            // Add the new fill layer using map_tract_bbl.geojson
+            map.addLayer({
+                id: 'map-tract-bbl-fill',
+                type: 'fill',
+                source: 'map-data-bbl',
+                paint: {
+                    'fill-color': '#ff0000', // temporary color
+                    'fill-opacity': 0.9
+                }
+            });
+    
+            // Update the sidebar or perform any other actions needed
+            document.getElementById('sidebar').style.display = 'none';
+        } else {
+            // Highlight the clicked polygon
+            map.setFilter('highlighted-tract', ['==', 'GEOID', e.features[0].properties.GEOID]);
+    
+            // Open a popup with information about the clicked polygon
+            new mapboxgl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <h3>${e.features[0].properties.NAME}</h3>
+                    <p>
+                        <strong>Neighborhood:</strong> ${e.features[0].properties.NTAName}<br>
+                        <strong>Median GHG Intensity:</strong> ${e.features[0].properties.mdn_ghg} kgCO2e/ft2<br>
+                        <strong>Rent Burdened:</strong> ${e.features[0].properties.rb}% of households<br>
+                    </p>
+                `)
+                .addTo(map);
+    
+            document.getElementById('sidebar').style.display = 'block';
+        }
     });
+    
 
     // Change the cursor to a pointer when
     // the mouse is over the states layer.
@@ -222,3 +252,37 @@ function updateMapLayer() {
         '#6e6e6e'
     ]);
 }
+
+// Listen for the zoom event on the map
+map.on('zoom', () => {
+    const currentZoom = map.getZoom();
+
+    // Check if the zoom level is 12
+    if (currentZoom === 13) {
+        // Remove the map-tract-bbl-fill layer if it exists
+        if (map.getLayer('map-tract-bbl-fill')) {
+            map.removeLayer('map-tract-bbl-fill');
+        }
+        
+        // Add back the map-data-tract-fill layer
+        map.addLayer({
+            id: 'map-data-tract-fill',
+            type: 'fill',
+            source: 'map-data-tract',
+            paint: {
+                'fill-color': [
+                    'match',
+                    ['get', currentVariable],
+                    'stable_rentb', '#757FBD',
+                    'stable', '#BDC4E3',
+                    'atrisk', '#F89638',
+                    'monitor', '#F9E2B4',
+                    '#6e6e6e'
+                ],
+                'fill-opacity': 0.9
+            }
+        },
+        labelLayerId 
+        );
+    }
+});
