@@ -29,7 +29,7 @@ body {
     display: inline-block;
     margin-right: 15px;
     font-size: .9rem;
-    background-color: #ececec;
+    background-color: #fff;
     border: none;
     padding: 8px 16px;
     border-radius: 10px;
@@ -55,7 +55,7 @@ body {
     left: 20px;
     z-index: 1;
     width: 300px;
-    background: #ececec;
+    background: #fff;
     padding: 15px;
     border-radius: 10px;
     -webkit-box-shadow: 0px 0px 2px 2px rgb(116 116 116)
@@ -111,7 +111,7 @@ body {
 }
 
 .legend-container {
-    background-color: #ececec;
+    background-color: #fff;
     position: fixed;
     bottom: 0;
     right: 0;
@@ -172,11 +172,23 @@ body {
 }
 
 .mapboxgl-popup {
-    max-width: 600px;
+    max-width: 800px;
     font:
         12px/20px 'Helvetica Neue',
         Arial,
         Helvetica,
         sans-serif;
+}
+
+.purple {
+    color: #757FBD;
+}
+
+.yellow {
+    color: #f7d38d;
+}
+
+.orange {
+    color: #F89638;
 }
 

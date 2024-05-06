@@ -33,16 +33,22 @@ map.addControl(new mapboxgl.NavigationControl());
 // when the map is finished it's initial load, add sources and layers.
 map.on('load', function () {
 
-     // add a geojson source for the borough boundaries
-     map.addSource('borough-boundaries', {
+    // add a geojson source for the borough boundaries
+    map.addSource('borough-boundaries', {
         type: 'geojson',
         data: 'data/borough-boundaries-simplified.geojson',
     })
 
-    // add a geojson source for choropleth
+    // add a geojson source for tract choropleth
     map.addSource('map-data-tract', {
         type: 'geojson',
         data: 'data/map_data_tract.geojson',
+    })
+
+    // add a geojson source for bbl choropleth
+    map.addSource('map-data-bbl', {
+        type: 'geojson',
+        data: 'data/map_data_bbl.geojson',
     })
 
     // Create LabelLayerID for 3D Buildings
@@ -70,17 +76,17 @@ map.on('load', function () {
 
         }
     },
-    labelLayerId
-)
-  // add borough outlines after the fill layer, so the outline is "on top" of the fill
-  map.addLayer({
-    id: 'borough-boundaries-line',
-    type: 'line',
-    source: 'borough-boundaries',
-    paint: {
-        'line-color': '#ccc'
-    }
-})
+        labelLayerId
+    )
+    // add borough outlines after the fill layer, so the outline is "on top" of the fill
+    map.addLayer({
+        id: 'borough-boundaries-line',
+        type: 'line',
+        source: 'borough-boundaries',
+        paint: {
+            'line-color': '#ccc'
+        }
+    })
 
     // Add a layer for highlighting the clicked polygon
     map.addLayer({
@@ -99,47 +105,29 @@ map.on('load', function () {
     // When a click event occurs on a feature in the states layer,
     // open a popup at the location of the click, with description
     map.on('click', 'map-data-tract-fill', (e) => {
+        const qd_2024 = e.features[0].properties.qd_2024;
+        const qd_2030 = e.features[0].properties.qd_2030;
+
+        // Check if either qd_2024 or qd_2030 is missing
+        if (qd_2024 === undefined || qd_2030 === undefined) {
+            return; // Exit the function early if either value is missing
+        }
 
         // Highlight the clicked polygon
         map.setFilter('highlighted-tract', ['==', 'GEOID', e.features[0].properties.GEOID]);
 
         // Open a popup with information about the clicked polygon
-        /*new mapboxgl.Popup()
+        new mapboxgl.Popup()
             .setLngLat(e.lngLat)
             .setHTML(`
-            <h3>${e.features[0].properties.GEOID}</h3>
+            <h3>${e.features[0].properties.NAME}</h3>
             <p>
+                <strong>Neighborhood:</strong> ${e.features[0].properties.NTAName}<br>
                 <strong>Median GHG Intensity:</strong> ${e.features[0].properties.mdn_ghg} kgCO2e/ft2<br>
-                <strong>Rent Burden:</strong> Median rent is ${e.features[0].properties.rntbrdE} % of household income <br>
+                <strong>Rent Burdened:</strong> ${e.features[0].properties.rb}% of households<br>
             </p>
         `)
             .addTo(map);
-        */
-
-        // Populate the table with data specific to the clicked polygon
-        const tableData = {
-            "Census Tract": e.features[0].properties.GEOID,
-            "Median GHG Intensity": `${e.features[0].properties.mdn_ghg} kgCO2e/ft2`,
-            "Rent Burden": `Median rent is ${e.features[0].properties.mdrntnE}% of household income`
-        };
-
-        const table = document.getElementById('data-table');
-
-        table.innerHTML = '';
-
-        for (const [key, value] of Object.entries(tableData)) {
-            const row = table.insertRow();
-            const cell1 = row.insertCell(0);
-            const cell2 = row.insertCell(1);
-            cell1.textContent = key;
-            cell2.textContent = value;
-
-            // Add borders to table cells
-            cell1.style.border = '1px solid #ccc';
-            cell2.style.border = '1px solid #ccc';
-            cell1.style.padding = '8px';
-            cell2.style.padding = '8px';
-        }
 
         document.getElementById('sidebar').style.display = 'block';
     });
@@ -234,27 +222,3 @@ function updateMapLayer() {
         '#6e6e6e'
     ]);
 }
-
-// Fly to Random "At Risk" Tract
-/*function flyToRandomRisk() {
-    // Filter features based on the "risk" category
-    const riskFeatures = map.querySourceFeatures('map-data-tract', {
-        filter: ['==', ['get', 'qd_2024'], 'disadvantaged']
-    });
-
-    // Check if there are any features in the "risk" category
-    if (riskFeatures.length > 0) {
-        // Randomly select one feature from the filtered list
-        const randomFeature = riskFeatures[Math.floor(Math.random() * riskFeatures.length)];
-
-        // Fly the map to the selected feature
-        map.flyTo({
-            center: randomFeature.geometry.coordinates[0][0], // Adjust the coordinates if needed
-            zoom: 14, // Adjust the zoom level as desired
-            essential: true // ensures the flyTo animation is smooth
-        });
-    } else {
-        console.log("No census tracts found in the 'risk' category.");
-    }
-}
-*/

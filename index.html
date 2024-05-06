@@ -45,18 +45,16 @@
 
                 <p>This map categorizes census tracts with <a
                         href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law
-                        97</a>-covered multifamily housing buildings into four quadrants by their level of rent burden
+                        97</a>-covered multifamily housing buildings into quadrants by their level of rent burden
                     and greenhouse gas emissions. </p>
                 <p>While LL97 is critical to decarbonizing NYC's housing stock, tracts with both high rent burden and
                     high emissions might be at risk of housing instability if property owners pass on compliance costs
-                    to already-burdened tenants.</p>
+                    to already-burdened tenants. More information can be found in the About and Methods tabs.</p>
                 <p> <strong>Select a LL97 Housing Emissions Cap-Year:</strong> </p>
                 <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')">2024: 6.75 kgCO2/sqft</button>
                 <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')">2030: 3.35 kgCO2/sqft</button>                
-                <p> <strong>Click a Tract to display its data below:</strong> </p>
-                <table id="data-table">
-                    <!-- Table content will be dynamically added here -->
-                </table>
+                <p> Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</p>
+                <p> Alternatively, here are some notable <strong class="orange">orange</strong> tracts you can fly to:</p>
             </div>
 
             <div id="map"></div>
