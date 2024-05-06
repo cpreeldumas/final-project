@@ -207,9 +207,20 @@ map.on('load', function () {
 let currentVariable = 'qd_2024';
 
 function changeLayer(variable) {
+    // Remove shading from all buttons
+    const buttons = document.querySelectorAll('.layer-button');
+    buttons.forEach(button => {
+        button.classList.remove('active');
+    });
+
+    // Add shading to the clicked button
+    const clickedButton = document.querySelector(`button[data-variable="${variable}"]`);
+    clickedButton.classList.add('active');
+
     currentVariable = variable;
     updateMapLayer();
 }
+
 
 function updateMapLayer() {
     // Update the map layer based on the current variable

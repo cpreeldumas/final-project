@@ -132,6 +132,10 @@ body {
     font-size: 16px;
 }
 
+.layer-button.active {
+    background-color: #ccc; /* Add your preferred shading color */
+}
+
 .nav-popup {
     display: none;
     position: fixed;
