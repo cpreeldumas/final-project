@@ -145,9 +145,12 @@ map.on('load', function () {
                 }
             })
 
+            // Call the function to update the legend
+            updateLegend('images/legend-inner.png');
+
             // Add the new fill layer using map_tract_bbl.geojson
             map.addLayer({
-                id: 'map-tract-bbl-fill',
+                id: 'map-data-bbl-fill',
                 type: 'fill',
                 source: 'map-data-bbl',
                 paint: {
@@ -170,44 +173,6 @@ map.on('load', function () {
                 labelLayerId
             );
 
-
-            map.on('click', 'map-data-bbl-fill', (e) => {
-                const bblData = map.queryRenderedFeatures(e.point, { layers: ['map-data-bbl'] });
-                if (!bblData.length) {
-                    return; // No features found in map-data-bbl layer, exit early
-                }
-            
-                // Extract relevant properties from the first feature (assuming only one feature is clicked)
-                const bblProperties = bblData[0].properties;
-            
-                // Construct the HTML table dynamically
-                const tableHTML = `
-                    <div class="header">
-                        <h1>New Sidebar Heading</h1>
-                        <h2>New Sidebar Subheading</h2>
-                    </div>
-                    <table>
-                        <tr>
-                            <th>Property</th>
-                            <th>Value</th>
-                        </tr>
-                        <tr>
-                            <td>Property 1</td>
-                            <td>${bblProperties.bbl}</td>
-                        </tr>
-                        <tr>
-                            <td>Property 2</td>
-                            <td>${bblProperties.addrss_}</td>
-                        </tr>
-                        <!-- Add more rows as needed -->
-                    </table>
-                    <button onclick="returnToPreviousMap()">Return to Previous Map</button>
-                `;
-            
-                // Update the sidebar with the table
-                document.getElementById('sidebar').innerHTML = tableHTML;
-            });
-
         } else {
             // Highlight the clicked polygon
             map.setFilter('highlighted-tract', ['==', 'GEOID', e.features[0].properties.GEOID]);
@@ -227,6 +192,43 @@ map.on('load', function () {
 
             document.getElementById('sidebar').style.display = 'block';
         }
+    });
+
+    map.on('click', 'map-data-bbl-fill', (e) => {
+        const bblData = map.queryRenderedFeatures(e.point, { layers: ['map-data-bbl'] });
+        if (!bblData.length) {
+            return; // No features found in map-data-bbl layer, exit early
+        }
+
+        // Extract relevant properties from the first feature (assuming only one feature is clicked)
+        const bblProperties = bblData[0].properties;
+
+        // Construct the HTML table dynamically
+        const tableHTML = `
+            <div class="header">
+                <h1>New Sidebar Heading</h1>
+                <h2>New Sidebar Subheading</h2>
+            </div>
+            <table>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+                <tr>
+                    <td>Property 1</td>
+                    <td>${bblProperties.bbl}</td>
+                </tr>
+                <tr>
+                    <td>Property 2</td>
+                    <td>${bblProperties.property2}</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </table>
+            <button onclick="returnToPreviousMap()">Return to Previous Map</button>
+        `;
+
+        // Update the sidebar with the table
+        document.getElementById('sidebar').innerHTML = tableHTML;
     });
 
 
@@ -253,7 +255,7 @@ map.on('load', function () {
             'source-layer': 'building',
             'filter': ['==', 'extrude', 'true'],
             'type': 'fill-extrusion',
-            'minzoom': 15,
+            'minzoom': 17,
             'paint': {
                 'fill-extrusion-color': '#aaa',
 
@@ -282,10 +284,6 @@ map.on('load', function () {
             }
         }
     );
-
-
-
-
 
 
 })
@@ -323,7 +321,10 @@ function updateMapLayer() {
 
 function returnToPreviousMap() {
     // Remove the current fill layer
-    map.removeLayer('map-tract-bbl-fill');
+    map.removeLayer('map-data-bbl-fill');
+
+    // Call the function to update the legend back to the original one
+    updateLegend('images/legend.png');
 
     // Add back the original fill layer
     map.addLayer({
@@ -353,8 +354,8 @@ function returnToPreviousMap() {
     // Show the original sidebar
     document.getElementById('sidebar').style.display = 'block';
 
-     // Update the sidebar content to the original content
-     document.getElementById('sidebar').innerHTML = `
+    // Update the sidebar content to the original content
+    document.getElementById('sidebar').innerHTML = `
      <div class="header">
          <h1>Local Law 97 & Rent Burden</h1>
          <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
@@ -369,3 +370,17 @@ function returnToPreviousMap() {
  `;
 }
 
+function updateLegend(legendImage) {
+    const legendContainer = document.querySelector('.legend-container');
+    const legendText = legendContainer.querySelector('.legend-text');
+    const legendImg = legendContainer.querySelector('img');
+
+    // Set the new legend image
+    legendImg.src = legendImage;
+
+    // Optionally, update legend text if needed
+    // legendText.innerText = "New legend text";
+
+    // Show the legend container
+    legendContainer.style.display = 'block';
+}
