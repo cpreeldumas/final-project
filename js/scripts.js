@@ -173,6 +173,17 @@ map.on('load', function () {
                 labelLayerId
             );
 
+            // Update the sidebar content
+            document.getElementById('sidebar').innerHTML = `
+            <div class="header">
+                <h1>New Sidebar Heading</h1>
+                <h2>New Sidebar Subheading</h2>
+            </div>
+            <p>New sidebar content goes here.</p>
+            <p></p>
+            <button onclick="returnToPreviousMap()">Return to Previous Map</button>
+        `;
+
         } else {
             // Highlight the clicked polygon
             map.setFilter('highlighted-tract', ['==', 'GEOID', e.features[0].properties.GEOID]);
@@ -195,7 +206,7 @@ map.on('load', function () {
     });
 
     map.on('click', 'map-data-bbl-fill', (e) => {
-        const bblData = map.queryRenderedFeatures(e.point, { layers: ['map-data-bbl'] });
+        const bblData = map.queryRenderedFeatures(e.point, { layers: ['map-data-bbl-fill'] });
         if (!bblData.length) {
             return; // No features found in map-data-bbl layer, exit early
         }
@@ -220,10 +231,11 @@ map.on('load', function () {
                 </tr>
                 <tr>
                     <td>Property 2</td>
-                    <td>${bblProperties.property2}</td>
+                    <td>${bblProperties.addrss_}</td>
                 </tr>
                 <!-- Add more rows as needed -->
             </table>
+            <p></p>
             <button onclick="returnToPreviousMap()">Return to Previous Map</button>
         `;
 
