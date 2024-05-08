@@ -51,6 +51,12 @@ map.on('load', function () {
         data: 'data/map_data_bbl.geojson',
     })
 
+    // add a geojson source for at risk tract outlines
+    map.addSource('map-atrisk-tracts', {
+        type: 'geojson',
+        data: 'data/map_atrisk_tracts.geojson',
+    })
+
     // Create LabelLayerID for 3D Buildings
     const layers = map.getStyle().layers;
     const labelLayerId = layers.find(
@@ -108,42 +114,104 @@ map.on('load', function () {
         const qd_2024 = e.features[0].properties.qd_2024;
         const qd_2030 = e.features[0].properties.qd_2030;
         const atrisk = e.features[0].properties.atrisk;
-    
+
         // Check if either qd_2024 or qd_2030 is missing
         if (qd_2024 === undefined || qd_2030 === undefined) {
             return; // Exit the function early if either value is missing
         }
-    
+
         // Check if the clicked tract is at risk in the selected year
-        if ((currentVariable === 'qd_2024' && qd_2024 === 'atrisk') || 
+        if ((currentVariable === 'qd_2024' && qd_2024 === 'atrisk') ||
             (currentVariable === 'qd_2030' && qd_2030 === 'atrisk')) {
-    
+
             // Zoom to the clicked tract
             map.flyTo({
                 center: e.lngLat,
                 zoom: 14 // Adjust zoom level as needed
             });
-    
+
             // Remove the current fill layer
             map.removeLayer('map-data-tract-fill');
-    
+
+            // Add tract boundaries
+            map.addLayer({
+                id: 'map-atrisk-tracts-lines',
+                type: 'line',
+                source: 'map-atrisk-tracts',
+                paint: {
+                    'line-color': '#F89638',
+                    'line-width': 0.4
+
+                }
+            })
+
             // Add the new fill layer using map_tract_bbl.geojson
             map.addLayer({
                 id: 'map-tract-bbl-fill',
                 type: 'fill',
                 source: 'map-data-bbl',
                 paint: {
-                    'fill-color': '#ff0000', // temporary color
+                    'fill-color': [ // use an expression for data-driven styling
+                        'interpolate',
+                        ['linear'],
+                        ['get', "ghg"],
+                        0,
+                        '#eff3ff',
+                        5,
+                        '#bdd7e7',
+                        10,
+                        '#6baed6',
+                        16.3,
+                        '#2171b5'
+                    ],
                     'fill-opacity': 0.9
                 }
+            },
+                labelLayerId
+            );
+
+
+            map.on('click', 'map-data-bbl-fill', (e) => {
+                const bblData = map.queryRenderedFeatures(e.point, { layers: ['map-data-bbl'] });
+                if (!bblData.length) {
+                    return; // No features found in map-data-bbl layer, exit early
+                }
+            
+                // Extract relevant properties from the first feature (assuming only one feature is clicked)
+                const bblProperties = bblData[0].properties;
+            
+                // Construct the HTML table dynamically
+                const tableHTML = `
+                    <div class="header">
+                        <h1>New Sidebar Heading</h1>
+                        <h2>New Sidebar Subheading</h2>
+                    </div>
+                    <table>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                        </tr>
+                        <tr>
+                            <td>Property 1</td>
+                            <td>${bblProperties.bbl}</td>
+                        </tr>
+                        <tr>
+                            <td>Property 2</td>
+                            <td>${bblProperties.addrss_}</td>
+                        </tr>
+                        <!-- Add more rows as needed -->
+                    </table>
+                    <button onclick="returnToPreviousMap()">Return to Previous Map</button>
+                `;
+            
+                // Update the sidebar with the table
+                document.getElementById('sidebar').innerHTML = tableHTML;
             });
-    
-            // Update the sidebar or perform any other actions needed
-            document.getElementById('sidebar').style.display = 'none';
+
         } else {
             // Highlight the clicked polygon
             map.setFilter('highlighted-tract', ['==', 'GEOID', e.features[0].properties.GEOID]);
-    
+
             // Open a popup with information about the clicked polygon
             new mapboxgl.Popup()
                 .setLngLat(e.lngLat)
@@ -156,11 +224,11 @@ map.on('load', function () {
                     </p>
                 `)
                 .addTo(map);
-    
+
             document.getElementById('sidebar').style.display = 'block';
         }
     });
-    
+
 
     // Change the cursor to a pointer when
     // the mouse is over the states layer.
@@ -253,36 +321,51 @@ function updateMapLayer() {
     ]);
 }
 
-// Listen for the zoom event on the map
-map.on('zoom', () => {
-    const currentZoom = map.getZoom();
+function returnToPreviousMap() {
+    // Remove the current fill layer
+    map.removeLayer('map-tract-bbl-fill');
 
-    // Check if the zoom level is 12
-    if (currentZoom === 13) {
-        // Remove the map-tract-bbl-fill layer if it exists
-        if (map.getLayer('map-tract-bbl-fill')) {
-            map.removeLayer('map-tract-bbl-fill');
+    // Add back the original fill layer
+    map.addLayer({
+        id: 'map-data-tract-fill',
+        type: 'fill',
+        source: 'map-data-tract',
+        paint: {
+            'fill-color': [
+                'match',
+                ['get', 'qd_2024'],
+                'stable_rentb', '#757FBD',
+                'stable', '#BDC4E3',
+                'atrisk', '#F89638',
+                'monitor', '#F9E2B4',
+                '#6e6e6e'
+            ],
+            'fill-opacity': 0.9
         }
-        
-        // Add back the map-data-tract-fill layer
-        map.addLayer({
-            id: 'map-data-tract-fill',
-            type: 'fill',
-            source: 'map-data-tract',
-            paint: {
-                'fill-color': [
-                    'match',
-                    ['get', currentVariable],
-                    'stable_rentb', '#757FBD',
-                    'stable', '#BDC4E3',
-                    'atrisk', '#F89638',
-                    'monitor', '#F9E2B4',
-                    '#6e6e6e'
-                ],
-                'fill-opacity': 0.9
-            }
-        },
-        labelLayerId 
-        );
-    }
-});
+    });
+
+    // Zoom out to level 11
+    map.flyTo({
+        center: [-73.96143, 40.73941], // starting position [lng, lat]
+        zoom: 11 // starting zoom
+    });
+
+    // Show the original sidebar
+    document.getElementById('sidebar').style.display = 'block';
+
+     // Update the sidebar content to the original content
+     document.getElementById('sidebar').innerHTML = `
+     <div class="header">
+         <h1>Local Law 97 & Rent Burden</h1>
+         <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
+     </div>
+     <p>This map categorizes census tracts with <a href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law 97</a>-covered multifamily housing buildings into quadrants by their level of rent burden and greenhouse gas emissions.</p>
+     <p>While LL97 is critical to decarbonizing NYC's housing stock, tracts with both high rent burden and high emissions might be at risk of housing instability if property owners pass on compliance costs to already-burdened tenants. More information can be found in the About and Methods tabs.</p>
+     <p><strong>Select a LL97 Housing Emissions Cap-Year:</strong></p>
+     <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')">2024: 6.75 kgCO2/sqft</button>
+     <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')">2030: 3.35 kgCO2/sqft</button>
+     <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</p>
+     <p>Alternatively, here are some notable <strong class="orange">orange</strong> tracts you can fly to:</p>
+ `;
+}
+
