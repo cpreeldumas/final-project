@@ -24,7 +24,7 @@ const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v11', // dark basemap
     center: [-73.96143, 40.73941], // starting position [lng, lat]
-    zoom: 11, // starting zoom
+    zoom: 10, // starting zoom
 });
 
 
@@ -92,9 +92,11 @@ map.on('load', function () {
         paint: {
             'line-color': '#ccc'
         }
-    })
+    },
+        labelLayerId
+    )
 
-    // Add a layer for highlighting the clicked polygon
+    // Add a layer for highlighting the clicked tract polygon
     map.addLayer({
         id: 'highlighted-tract',
         type: 'line',
@@ -106,6 +108,20 @@ map.on('load', function () {
             'line-blur': 0.3
         },
         filter: ['==', 'GEOID', ''] // Initially filter to none
+    });
+
+    // Add a layer for highlighting the clicked bbl polygon
+    map.addLayer({
+        id: 'highlighted-bbl',
+        type: 'line',
+        source: 'map-data-bbl',
+        paint: {
+            'line-color': '#F89638',
+            'line-width': 2,
+            'line-opacity': 0.8,
+            'line-blur': 0.3
+        },
+        filter: ['==', 'bbl', ''] // Initially filter to none
     });
 
     // When a click event occurs on a feature in the states layer,
@@ -176,12 +192,12 @@ map.on('load', function () {
             // Update the sidebar content
             document.getElementById('sidebar').innerHTML = `
             <div class="header">
-                <h1>New Sidebar Heading</h1>
-                <h2>New Sidebar Subheading</h2>
+                <h1>Lot View</h1>
+                <h2>Lots in High Rent Burden & High Emmission Tracts</h2>
             </div>
-            <p>New sidebar content goes here.</p>
+            <p>Click a lot to display its data report below:</p>
             <p></p>
-            <button onclick="returnToPreviousMap()">Return to Previous Map</button>
+            <button onclick="returnToPreviousMap()">Return to Previous Tract-Level Map</button>
         `;
 
         } else {
@@ -211,30 +227,64 @@ map.on('load', function () {
             return; // No features found in map-data-bbl layer, exit early
         }
 
+        // Highlight the clicked polygon
+        map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
+
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
         const bblProperties = bblData[0].properties;
 
         // Construct the HTML table dynamically
         const tableHTML = `
             <div class="header">
-                <h1>New Sidebar Heading</h1>
-                <h2>New Sidebar Subheading</h2>
+                <h1>Lot View</h1>
+                <h2>Lots in High Rent Burden & High Emmission Tracts</h2>
             </div>
+            <p>Click a lot to display its data report below:</p>
+            <p></p>
+            <div class="header">
+                <h2>Neighborhood: <b>${bblProperties.NTAName}</b></h2>
+                <h2>Lot Address: <b>${bblProperties.addrss_}</b>, <b>${bblProperties.BoroNam}</b></h2>
+            </div>
+            <div>
+            This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.
+            </div>
+            <p></p>
+            <div style="background-color: #FEEBC8;">
             <table>
                 <tr>
-                    <th>Property</th>
-                    <th>Value</th>
+                    <td style="outline: 1px solid #F89638;">GHG Intensity</td>
+                    <td style="outline: 1px solid #F89638;"> ${bblProperties.ghg} kgCO2/sqft</td>
                 </tr>
                 <tr>
-                    <td>Property 1</td>
-                    <td>${bblProperties.bbl}</td>
+                    <td style="outline: 1px solid #F89638;">Energy Star Score</td>
+                    <td style="outline: 1px solid #F89638;"> ${bblProperties.ess} out of 100</td>
                 </tr>
                 <tr>
-                    <td>Property 2</td>
-                    <td>${bblProperties.addrss_}</td>
+                    <td style="outline: 1px solid #F89638;">Residential Units</td>
+                    <td style="outline: 1px solid #F89638;"> ${bblProperties.unts_rs}</td>
                 </tr>
-                <!-- Add more rows as needed -->
+                <tr>
+                    <td style="outline: 1px solid #F89638;">Year Built</td>
+                    <td style="outline: 1px solid #F89638;"> ${bblProperties.year}</td>
+                </tr>
+                <tr>
+                    <td style="outline: 1px solid #F89638;">Sq. Feet</td>
+                    <td style="outline: 1px solid #F89638;"> ${bblProperties.gfa_chr}</td>
+                </tr>
+                <tr>
+                    <td style="outline: 1px solid #F89638;">Tract-Level Rent-Burdened</td>
+                    <td style="outline: 1px solid #F89638;"> ${bblProperties.rb_c}%</td>
+                </tr>
+                <tr>
+                    <td style="outline: 1px solid #F89638;">Tract-Level Median Rent</td>
+                    <td style="outline: 1px solid #F89638;"> $${bblProperties.mdrntE_}</td>
+                </tr>
+                <tr>
+                    <td style="outline: 1px solid #F89638;">Tract-Level Median Income</td>
+                    <td style="outline: 1px solid #F89638;"> $${bblProperties.mdncmE_}</td>
+                </tr>
             </table>
+            </div>
             <p></p>
             <button onclick="returnToPreviousMap()">Return to Previous Map</button>
         `;
@@ -245,16 +295,29 @@ map.on('load', function () {
 
 
     // Change the cursor to a pointer when
-    // the mouse is over the states layer.
+    // the mouse is over the tract layer.
     map.on('mouseenter', 'map-data-tract-fill', () => {
         map.getCanvas().style.cursor = 'pointer';
     });
 
     // Change the cursor back to a pointer
-    // when it leaves the states layer.
+    // when it leaves the tract layer.
     map.on('mouseleave', 'map-data-tract-fill', () => {
         map.getCanvas().style.cursor = '';
     });
+
+    // Change the cursor to a pointer when
+    // the mouse is over the bbl layer.
+    map.on('mouseenter', 'map-data-bbl-fill', () => {
+        map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change the cursor back to a pointer
+    // when it leaves the tract layer.
+    map.on('mouseleave', 'map-data-bbl-fill', () => {
+        map.getCanvas().style.cursor = '';
+    });
+
 
 
     // The 'building' layer in the Mapbox Streets
@@ -334,6 +397,7 @@ function updateMapLayer() {
 function returnToPreviousMap() {
     // Remove the current fill layer
     map.removeLayer('map-data-bbl-fill');
+    map.removeLayer('borough-boundaries-line');
 
     // Call the function to update the legend back to the original one
     updateLegend('images/legend.png');
@@ -357,6 +421,17 @@ function returnToPreviousMap() {
         }
     });
 
+     // add borough outlines after the fill layer, so the outline is "on top" of the fill
+     map.addLayer({
+        id: 'borough-boundaries-line',
+        type: 'line',
+        source: 'borough-boundaries',
+        paint: {
+            'line-color': '#ccc'
+        }
+    }
+    );
+
     // Zoom out to level 11
     map.flyTo({
         center: [-73.96143, 40.73941], // starting position [lng, lat]
@@ -378,7 +453,6 @@ function returnToPreviousMap() {
      <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')">2024: 6.75 kgCO2/sqft</button>
      <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')">2030: 3.35 kgCO2/sqft</button>
      <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</p>
-     <p>Alternatively, here are some notable <strong class="orange">orange</strong> tracts you can fly to:</p>
  `;
 }
 
