@@ -174,8 +174,8 @@ map.on('load', function () {
 
                 }
             },
-            labelLayerId
-        )
+                labelLayerId
+            )
 
             // Highlight the clicked tract line
             map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
@@ -268,16 +268,16 @@ map.on('load', function () {
                 <h1>Lot View</h1>
                 <h2>Showing Lots in High Rent Burden & High Emmission Tracts</h2>
             </div>
-            <p>Your Selection:</p>
-            <p></p>
+                <p>Your Selection:</p>
+                <p></p>
             <div class="header">
                 <p><strong>Neighborhood:</strong> ${bblProperties.NTAName}</p>
                 <p><strong>Lot Address:</strong>  ${bblProperties.addrss_}, ${bblProperties.BoroNam}</p>
             </div>
             <div>
-            <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.</p>
+                <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.</p>
             </div>
-            <p></p>
+                <p></p>
             <div style="background-color: #FEEBC8; border-radius: 10px; padding: 10px;">
                 <table style="border-collapse: collapse;">
                     <tr>
@@ -297,19 +297,19 @@ map.on('load', function () {
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.year}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Sq. Feet:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Square Feet:</td>
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.gfa_chr}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract-Level Rent-Burdened:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract Rent-Burdened:</td>
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.rb_c}%</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract-Level Median Rent:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract Median Rent:</td>
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">$${bblProperties.mdrntE_}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract-Level Median Income:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract Median Income:</td>
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">$${bblProperties.mdncmE_}</td>
                     </tr>
                 </table>
