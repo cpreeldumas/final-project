@@ -54,7 +54,7 @@ body {
     top: 10px;
     left: 20px;
     z-index: 1;
-    width: 300px;
+    width: 390px;
     background: #fff;
     padding: 15px;
     border-radius: 10px;
@@ -77,12 +77,13 @@ body {
 
 
 #sidebar h1 {
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 5px; /* Add some bottom margin */
 }
 
 #sidebar h2 {
     font-size:16px;
+    font-weight: 550;
     margin-top: 0; /* Remove top margin */
 }
 
@@ -112,6 +113,17 @@ body {
 
 .legend-container {
     background-color: #fff;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.legend-container-inner {
+    background-color: #666666;
     position: fixed;
     bottom: 0;
     right: 0;

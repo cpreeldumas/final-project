@@ -130,7 +130,7 @@ map.on('load', function () {
         type: 'line',
         source: 'map-data-bbl',
         paint: {
-            'line-color': '#F89638',
+            'line-color': 'white',
             'line-width': 2,
             'line-opacity': 0.8,
             'line-blur': 0.3
@@ -157,7 +157,7 @@ map.on('load', function () {
             // Zoom to the clicked tract
             map.flyTo({
                 center: e.lngLat,
-                zoom: 14 // Adjust zoom level as needed
+                zoom: 15 // Adjust zoom level as needed
             });
 
             // Remove the current fill layer
@@ -173,7 +173,9 @@ map.on('load', function () {
                     'line-width': 0.4
 
                 }
-            })
+            },
+            labelLayerId
+        )
 
             // Highlight the clicked tract line
             map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
@@ -192,13 +194,17 @@ map.on('load', function () {
                         ['linear'],
                         ['get', "ghg"],
                         0,
-                        '#eff3ff',
-                        5,
-                        '#bdd7e7',
-                        10,
-                        '#6baed6',
+                        '#52BA4F',
+                        3.3,
+                        '#9AD798',
+                        6.6,
+                        '#E7EBC5',
+                        9.9,
+                        '#F6998C',
+                        13.3,
+                        '#F47266',
                         16.3,
-                        '#2171b5'
+                        '#F15B52'
                     ],
                     'fill-opacity': 0.9
                 }
@@ -210,7 +216,7 @@ map.on('load', function () {
             document.getElementById('sidebar').innerHTML = `
             <div class="header">
                 <h1>Lot View</h1>
-                <h2>Lots in High Rent Burden & High Emmission Tracts</h2>
+                <h2>Showing Lots in High Rent Burden & High Emmission Tracts</h2>
             </div>
             <p>Click a lot to display its data report below:</p>
             <p></p>
@@ -260,53 +266,53 @@ map.on('load', function () {
         const tableHTML = `
             <div class="header">
                 <h1>Lot View</h1>
-                <h2>Lots in High Rent Burden & High Emmission Tracts</h2>
+                <h2>Showing Lots in High Rent Burden & High Emmission Tracts</h2>
             </div>
-            <p>Click a lot to display its data report below:</p>
+            <p>Your Selection:</p>
             <p></p>
             <div class="header">
-                <h2>Neighborhood: <b>${bblProperties.NTAName}</b></h2>
-                <h2>Lot Address: <b>${bblProperties.addrss_}</b>, <b>${bblProperties.BoroNam}</b></h2>
+                <p><strong>Neighborhood:</strong> ${bblProperties.NTAName}</p>
+                <p><strong>Lot Address:</strong>  ${bblProperties.addrss_}, ${bblProperties.BoroNam}</p>
             </div>
             <div>
-            This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.
+            <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.</p>
             </div>
             <p></p>
-            <div style="background-color: #FEEBC8;">
-            <table>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">GHG Intensity</td>
-                    <td style="outline: 1px solid #F89638;"> ${bblProperties.ghg} kgCO2/sqft</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Energy Star Score</td>
-                    <td style="outline: 1px solid #F89638;"> ${bblProperties.ess} out of 100</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Residential Units</td>
-                    <td style="outline: 1px solid #F89638;"> ${bblProperties.unts_rs}</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Year Built</td>
-                    <td style="outline: 1px solid #F89638;"> ${bblProperties.year}</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Sq. Feet</td>
-                    <td style="outline: 1px solid #F89638;"> ${bblProperties.gfa_chr}</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Tract-Level Rent-Burdened</td>
-                    <td style="outline: 1px solid #F89638;"> ${bblProperties.rb_c}%</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Tract-Level Median Rent</td>
-                    <td style="outline: 1px solid #F89638;"> $${bblProperties.mdrntE_}</td>
-                </tr>
-                <tr>
-                    <td style="outline: 1px solid #F89638;">Tract-Level Median Income</td>
-                    <td style="outline: 1px solid #F89638;"> $${bblProperties.mdncmE_}</td>
-                </tr>
-            </table>
+            <div style="background-color: #FEEBC8; border-radius: 10px; padding: 10px;">
+                <table style="border-collapse: collapse;">
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;"><b>GHG Intensity:</b></td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;"><b>${bblProperties.ghg} kgCO2/sqft</b></td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Energy Star Score:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.ess} out of 100</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Residential Units:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.unts_rs}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Year Built:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.year}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Sq. Feet:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.gfa_chr}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract-Level Rent-Burdened:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">${bblProperties.rb_c}%</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract-Level Median Rent:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">$${bblProperties.mdrntE_}</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">Tract-Level Median Income:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 10px 10px 0;">$${bblProperties.mdncmE_}</td>
+                    </tr>
+                </table>
             </div>
             <p></p>
             <button onclick="returnToPreviousMap()">Return to Previous Map</button>
