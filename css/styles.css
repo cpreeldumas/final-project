@@ -204,3 +204,12 @@ body {
     color: #F89638;
 }
 
+.road-view {
+    margin-bottom: 20px;
+}
+
+.road-view iframe {
+    border: none;
+    width: 100%;
+    height: 200px;
+}

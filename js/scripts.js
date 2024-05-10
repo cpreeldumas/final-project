@@ -262,6 +262,20 @@ map.on('load', function () {
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
         const bblProperties = bblData[0].properties;
 
+        // Extract longitude and latitude from the clicked feature
+        const lng = bblData[0].properties.lng;
+        const lat = bblData[0].properties.lat;
+
+        // Construct the road view URL with the extracted coordinates
+        const roadViewURL = `https://roadview.planninglabs.nyc/view/${lng}/${lat}`;
+
+        // Construct the HTML for the road view element
+        const roadViewHTML = `
+        <div class="road-view">
+            <iframe src="${roadViewURL}" width="100%" height="400px"></iframe>
+        </div>
+    `;
+
         // Construct the HTML table dynamically
         const tableHTML = `
             <div class="header">
@@ -274,6 +288,7 @@ map.on('load', function () {
                 <p><strong>Neighborhood:</strong> ${bblProperties.NTAName}</p>
                 <p><strong>Lot Address:</strong>  ${bblProperties.addrss_}, ${bblProperties.BoroNam}</p>
             </div>
+            ${roadViewHTML} <!-- Add roadViewHTML here -->
             <div>
                 <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.</p>
             </div>
