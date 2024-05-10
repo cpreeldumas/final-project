@@ -96,20 +96,6 @@ map.on('load', function () {
         labelLayerId
     )
 
-    // Add a layer for highlighting the clicked tract polygon
-    map.addLayer({
-        id: 'highlighted-tract',
-        type: 'line',
-        source: 'map-data-tract',
-        paint: {
-            'line-color': 'white',
-            'line-width': 2,
-            'line-opacity': 0.8,
-            'line-blur': 0.3
-        },
-        filter: ['==', 'GEOID', ''] // Initially filter to none
-    });
-
     // Add a layer for highlighting the clicked AT RISK tract polygon
     map.addLayer({
         id: 'highlighted-tract-atrisk',
@@ -120,6 +106,20 @@ map.on('load', function () {
             'line-width': 3,
             'line-opacity': 0.8,
             'line-blur': 0.3
+        },
+        filter: ['==', 'GEOID', ''] // Initially filter to none
+    });
+
+    // Add a layer for highlighting the clicked tract polygon
+    map.addLayer({
+        id: 'highlighted-tract',
+        type: 'line',
+        source: 'map-data-tract',
+        paint: {
+            'line-color': 'white',
+            'line-width': 2,
+            'line-opacity': 0.9,
+            'line-blur': 0.1
         },
         filter: ['==', 'GEOID', ''] // Initially filter to none
     });
@@ -274,7 +274,17 @@ map.on('load', function () {
         <div class="road-view">
             <iframe src="${roadViewURL}" width="100%" height="400px"></iframe>
         </div>
-    `;
+        `;
+
+        // Determine compliance message based on GHG value
+        let complianceMessage = "";
+        if (bblProperties.ghg < 3.35) {
+            complianceMessage = "It is compliant under both the 2024 cap and 2030 cap.";
+        } else if (bblProperties.ghg < 6.75) {
+            complianceMessage = "It is compliant under only the 2024 cap, and will become noncompliant in 2030.";
+        } else {
+            complianceMessage = "It is noncompliant under both the 2024 and 2030 caps.";
+        }
 
         // Construct the HTML table dynamically
         const tableHTML = `
@@ -291,6 +301,7 @@ map.on('load', function () {
             ${roadViewHTML} <!-- Add roadViewHTML here -->
             <div>
                 <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing.</p>
+                <p>${complianceMessage}</p>
             </div>
                 <p></p>
             <div style="background-color: #FEEBC8; border-radius: 10px; padding: 10px;">
@@ -442,6 +453,7 @@ function returnToPreviousMap() {
     // Remove the current fill layer
     map.removeLayer('map-data-bbl-fill');
     map.removeLayer('borough-boundaries-line');
+    map.removeLayer('map-atrisk-tracts-lines');
 
     // Call the function to update the legend back to the original one
     updateLegend('images/legend.png');
@@ -476,6 +488,7 @@ function returnToPreviousMap() {
     }
     );
 
+
     // Zoom out to level 11
     map.flyTo({
         center: [-73.96143, 40.73941], // starting position [lng, lat]
@@ -498,6 +511,12 @@ function returnToPreviousMap() {
      <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')">2030: 3.35 kgCO2/sqft</button>
      <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</p>
  `;
+
+    // Move the highlighted tract layer above the fill layer
+    map.moveLayer('map-data-tract-fill', 'highlighted-tract');
+
+    // Reset the filter for the highlighted tract layer
+    map.setFilter('highlighted-tract', ['==', 'GEOID', '']);
 }
 
 function updateLegend(legendImage) {
