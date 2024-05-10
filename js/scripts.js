@@ -110,6 +110,20 @@ map.on('load', function () {
         filter: ['==', 'GEOID', ''] // Initially filter to none
     });
 
+    // Add a layer for highlighting the clicked AT RISK tract polygon
+    map.addLayer({
+        id: 'highlighted-tract-atrisk',
+        type: 'line',
+        source: 'map-data-tract',
+        paint: {
+            'line-color': '#F89638',
+            'line-width': 3,
+            'line-opacity': 0.8,
+            'line-blur': 0.3
+        },
+        filter: ['==', 'GEOID', ''] // Initially filter to none
+    });
+
     // Add a layer for highlighting the clicked bbl polygon
     map.addLayer({
         id: 'highlighted-bbl',
@@ -160,6 +174,9 @@ map.on('load', function () {
 
                 }
             })
+
+            // Highlight the clicked tract line
+            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
 
             // Call the function to update the legend
             updateLegend('images/legend-inner.png');
@@ -227,7 +244,13 @@ map.on('load', function () {
             return; // No features found in map-data-bbl layer, exit early
         }
 
-        // Highlight the clicked polygon
+        // Remove the filter for the previously highlighted tract boundary layer
+        map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', '']);
+
+        // Highlight the tract boundary where the clicked bbl is located
+        map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
+
+        // Highlight the clicked bbl polygon
         map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
 
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
@@ -421,8 +444,8 @@ function returnToPreviousMap() {
         }
     });
 
-     // add borough outlines after the fill layer, so the outline is "on top" of the fill
-     map.addLayer({
+    // add borough outlines after the fill layer, so the outline is "on top" of the fill
+    map.addLayer({
         id: 'borough-boundaries-line',
         type: 'line',
         source: 'borough-boundaries',
