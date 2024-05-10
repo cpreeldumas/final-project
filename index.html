@@ -41,14 +41,14 @@
                     <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
                 </div>
 
-                <p>This map categorizes census tracts with <a
-                        href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law
-                        97</a>-covered multifamily housing buildings into quadrants by their level of rent burden
-                    and greenhouse gas emissions. </p>
-                <p>While LL97 is critical to decarbonizing NYC's housing stock, tracts with both high rent burden and
-                    high emissions might be at risk of housing instability if property owners pass on compliance costs
-                    to already-burdened tenants. More information can be found in the About and Methods tabs.</p>
-                <p> <strong>Select a LL97 Housing Emissions Cap-Year:</strong> </p>
+                <p>While <a
+                    href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law 97</a> (LL97) is critical to decarbonizing NYC's housing stock, areas with both high rent burden and
+                    high greenhouse gas emissions might be at risk of housing instability if property owners pass on compliance costs
+                    to already-burdened tenants.</p>
+
+                <p>This map categorizes census tracts with LL97-covered <strong>multifamily housing buildings</strong> into quadrants by their level of rent burden<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Here, rent-burdened tracts are tracts where over half of the population is rent-burdened, i.e., paying over 30% of their income on rent."></i>
+                    and compliance with LL97 greenhouse gas intensity caps.<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Greenhouse Gas Intensity is the total direct and indirect greenhouse gases emitted due to energy used per gross square foot of the property, reported in kilograms of carbon dioxide equivalent per square foot (kgCO2/sqft)."></i> Grey areas in the map have no LL97-covered multifamily housing.</p>
+                <p> <strong>Select a LL97 Housing Carbon-Cap-Year:<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Local Law 97 phases in carbon caps through 2050, with carbon caps becoming more stringent over time."></i></strong> </p>
                 <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
                 <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>  
                 <p></p>              
@@ -65,8 +65,12 @@
         </div>
     </div>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.js"></script>
-    <script src="js/scripts.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <script src="https://kit.fontawesome.com/b5ad841b09.js" crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+
 
 </body>
 

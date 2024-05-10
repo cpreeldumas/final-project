@@ -318,7 +318,7 @@ map.on('load', function () {
                     </tr>
                     <tr>
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Square Feet:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${bblProperties.gfa_chr}</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${numeral(bblProperties.gfa_chr).format('0,0')}</td>
                     </tr>
                     <tr>
                         <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Tract Rent-Burdened:</td>
@@ -529,3 +529,7 @@ function updateLegend(legendImage) {
     // Show the legend container
     legendContainer.style.display = 'block';
 }
+
+// add popovers
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))

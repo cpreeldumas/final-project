@@ -255,7 +255,7 @@ body {
 }
 
 .layer-button:hover {
-  background-color: #e4e4e4;
+  background-color: #ececec;
   text-decoration: none;
   transition-duration: 0.1s;
 }
@@ -293,7 +293,7 @@ body {
   }
   
   .button-4:hover {
-    background-color: #e4e4e4;
+    background-color: #ececec;
     text-decoration: none;
     transition-duration: 0.1s;
   }
@@ -303,3 +303,5 @@ body {
     box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
     transition: none 0s;
   }
+
+  .superscript { position: relative; top: -0.3em; font-size: 100%; }
