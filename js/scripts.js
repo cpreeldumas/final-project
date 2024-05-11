@@ -163,6 +163,9 @@ map.on('load', function () {
             // Remove the current fill layer
             map.removeLayer('map-data-tract-fill');
 
+            // Remove the highlighted tract layer
+            map.removeLayer('highlighted-tract');
+
             // Add tract boundaries
             map.addLayer({
                 id: 'map-atrisk-tracts-lines',
@@ -449,9 +452,16 @@ function returnToPreviousMap() {
     map.removeLayer('map-data-bbl-fill');
     map.removeLayer('borough-boundaries-line');
     map.removeLayer('map-atrisk-tracts-lines');
+    map.removeLayer('highlighted-bbl');
 
     // Call the function to update the legend back to the original one
     updateLegend('images/legend.png');
+
+    // Create LabelLayerID for 3D Buildings
+    const layers = map.getStyle().layers;
+    const labelLayerId = layers.find(
+        (layer) => layer.type === 'symbol' && layer.layout['text-field']
+    ).id;
 
     // Add back the original fill layer
     map.addLayer({
@@ -470,7 +480,10 @@ function returnToPreviousMap() {
             ],
             'fill-opacity': 0.9
         }
-    });
+    },
+    labelLayerId
+);
+
 
     // add borough outlines after the fill layer, so the outline is "on top" of the fill
     map.addLayer({
@@ -482,6 +495,20 @@ function returnToPreviousMap() {
         }
     }
     );
+
+    // Add a layer for highlighting the clicked tract polygon
+    map.addLayer({
+        id: 'highlighted-tract',
+        type: 'line',
+        source: 'map-data-tract',
+        paint: {
+            'line-color': 'white',
+            'line-width': 2,
+            'line-opacity': 0.9,
+            'line-blur': 0.1
+        },
+        filter: ['==', 'GEOID', ''] // Initially filter to none
+    });
 
 
     // Zoom out to level 11
@@ -495,17 +522,23 @@ function returnToPreviousMap() {
 
     // Update the sidebar content to the original content
     document.getElementById('sidebar').innerHTML = `
-     <div class="header">
-         <h1>Local Law 97 & Rent Burden</h1>
-         <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
-     </div>
-    <p>This map categorizes census tracts with <a href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law 97</a>-covered multifamily housing buildings into quadrants by their level of rent burden and greenhouse gas emissions.</p>
-    <p>While LL97 is critical to decarbonizing NYC's housing stock, tracts with both high rent burden and high emissions might be at risk of housing instability if property owners pass on compliance costs to already-burdened tenants. More information can be found in the About and Methods tabs.</p>
-    <p><strong>Select a LL97 Housing Emissions Cap-Year:</strong></p>
-     <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
-     <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>
-     <p></p>  
-     <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</p>
+                <div class="header">
+                    <h1>Local Law 97 & Rent Burden</h1>
+                    <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
+                </div>
+
+                <p>While <a
+                    href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law 97</a> (LL97) is critical to decarbonizing NYC's housing stock, areas with both high rent burden and
+                    high greenhouse gas emissions might be at risk of housing instability if property owners pass on compliance costs
+                    to already-burdened tenants.</p>
+
+                <p>This map categorizes census tracts with LL97-covered <strong>multifamily housing buildings</strong> into quadrants by their level of rent burden<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Here, rent-burdened tracts are tracts where over half of the population is rent-burdened, i.e., paying over 30% of their income on rent."></i>
+                    and compliance with LL97 greenhouse gas intensity caps.<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Greenhouse Gas Intensity is the total direct and indirect greenhouse gases emitted due to energy used per gross square foot of the property, reported in kilograms of carbon dioxide equivalent per square foot (kgCO2/sqft)."></i> Grey areas in the map have no LL97-covered multifamily housing. See the About and Methods & Data tabs for more information.</p>
+                <p> <strong>Select a LL97 Housing Carbon-Cap-Year:<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Local Law 97 phases in carbon caps through 2050, with carbon caps becoming more stringent over time. Carbon caps also vary by property type. The caps below are for multifamily housing properties."></i></strong> </p>
+                <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
+                <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>  
+                <p></p>              
+                <p> <strong> Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</strong></p>
  `;
 
     // Move the highlighted tract layer above the fill layer
