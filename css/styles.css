@@ -305,3 +305,12 @@ body {
   }
 
   .superscript { position: relative; top: -0.3em; font-size: 100%; }
+
+.accordion-button {
+    font-size: 14px; /* Adjust the font size as needed */
+    padding: 0.5rem 0.5rem; /* Adjust the padding as needed */
+}
+
+.accordion-body {
+    font-size: 14px; /* Adjust the font size as needed */
+}

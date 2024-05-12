@@ -30,8 +30,34 @@ const map = new mapboxgl.Map({
 
 map.addControl(new mapboxgl.NavigationControl());
 
+
+
 // when the map is finished it's initial load, add sources and layers.
 map.on('load', function () {
+    
+    // Identify layers for place, street, airports, parks, and landmarks labels
+    const mbLayers = map.getStyle().layers;
+    const labelLayers = mbLayers.filter(layer => {
+        return layer.type === 'symbol' && (
+            layer['source-layer'] === 'place_label' ||
+            layer['source-layer'] === 'road' ||
+            layer['source-layer'] === 'airport_label' ||
+            layer['source-layer'] === 'poi_label' ||
+            layer['source-layer'] === 'park_label'
+        );
+    });
+
+    // Remove stroke from the label layers and make labels white
+    labelLayers.forEach(layer => {
+        map.setPaintProperty(layer.id, 'text-color', '#FFFFFF');
+        map.setPaintProperty(layer.id, 'text-halo-color', 'rgba(0, 0, 0, 0)'); // Remove stroke
+    });
+
+     // add a geojson source for the NYC buffer mask
+     map.addSource('nyc-buffer-mask', {
+        type: 'geojson',
+        data: 'data/nyc-buffer-mask.geojson',
+    })
 
     // add a geojson source for the borough boundaries
     map.addSource('borough-boundaries', {
@@ -62,6 +88,18 @@ map.on('load', function () {
     const labelLayerId = layers.find(
         (layer) => layer.type === 'symbol' && layer.layout['text-field']
     ).id;
+
+    // add a NYC buffer mask to subdue non-NYC areas
+    map.addLayer({
+        id: 'nyc-buffer-mask-fill',
+        type: 'fill',
+        source: 'nyc-buffer-mask',
+        paint: {
+            'fill-color': '#292929',
+            'fill-opacity': 0.2
+        }
+    })
+
 
     // first add the fill layer, using a match expression to give each a unique color based on its quadrant property
     map.addLayer({
@@ -108,7 +146,9 @@ map.on('load', function () {
             'line-blur': 0.3
         },
         filter: ['==', 'GEOID', ''] // Initially filter to none
-    });
+    },
+        labelLayerId
+    );
 
     // Add a layer for highlighting the clicked tract polygon
     map.addLayer({
@@ -122,7 +162,9 @@ map.on('load', function () {
             'line-blur': 0.1
         },
         filter: ['==', 'GEOID', ''] // Initially filter to none
-    });
+    },
+        labelLayerId
+    );
 
     // Add a layer for highlighting the clicked bbl polygon
     map.addLayer({
@@ -208,15 +250,15 @@ map.on('load', function () {
             // Make the tract fill layer invisible
             map.setLayoutProperty('map-data-tract-fill', 'visibility', 'none'),
 
-            // Make the highlighted tract layer invisible
-            map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
+                // Make the highlighted tract layer invisible
+                map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
 
-            // Add tract boundaries
-            map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
+                // Add tract boundaries
+                map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
 
-            // Highlight the clicked tract line
-            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
-            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
+                // Highlight the clicked tract line
+                map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
+                map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
 
             // Call the function to update the legend
             updateLegend('images/legend-inner.png');
@@ -224,13 +266,16 @@ map.on('load', function () {
             // Show the new bbl choropleth fill layer
             map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'visible'),
 
-            // Update the sidebar content
-            document.getElementById('sidebar').innerHTML = `
+                // Update the sidebar content
+                document.getElementById('sidebar').innerHTML = `
             <div class="header">
                 <h1>Property Lot View</h1>
-                <h2>Showing Lots in High Rent Burden & High Emmission Tracts</h2>
+                <h2>Showing LL97-Covered Multifamily Housing Lots in High Rent Burden & High Emission Tracts</h2>
             </div>
-            <p>Click a lot to display its data report below:</p>
+            <p>
+                You are in <strong class="orange">${e.features[0].properties.NAME}</strong>,<br>
+                <strong>Click a property lot to display its data report below:</strong>
+            </p>
             <p></p>
             <button class ="button-4" onclick="returnToPreviousMap()">Return to Previous Tract-Level Map</button>
         `;
@@ -264,14 +309,14 @@ map.on('load', function () {
 
         // Hide any previously highlighted tract boundary layer
         map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
-        
-        // Highlight the tract boundary where the clicked bbl is located
-        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
-        map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
+
+            // Highlight the tract boundary where the clicked bbl is located
+            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
+            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
 
         // Highlight the clicked bbl polygon
         map.setLayoutProperty('highlighted-bbl', 'visibility', 'visible'),
-        map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
+            map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
 
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
         const bblProperties = bblData[0].properties;
@@ -306,8 +351,9 @@ map.on('load', function () {
                 <h1>Property Lot View</h1>
                 <p>
                     Your Selection:<br>
+                    <strong>Lot Address:</strong>  ${bblProperties.addrss_}, ${bblProperties.BoroNam}<br>
                     <strong>Neighborhood:</strong> ${bblProperties.NTAName}<br>
-                    <strong>Lot Address:</strong>  ${bblProperties.addrss_}, ${bblProperties.BoroNam}
+                    ${e.features[0].properties.NAME}
                 </p>
             ${roadViewHTML} <!-- Add roadViewHTML here -->
                 <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing. ${complianceMessage}</p>
@@ -462,13 +508,13 @@ function updateMapLayer() {
 function returnToPreviousMap() {
     // Hide bbl-level layers
     map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'none'),
-    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
-    map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
-    map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
-    map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
+        map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
+        map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
+        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
+        map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
 
-    // Call the function to update the legend back to the original one
-    updateLegend('images/legend.png');
+        // Call the function to update the legend back to the original one
+        updateLegend('images/legend.png');
 
     // Create LabelLayerID for 3D Buildings
     const layers = map.getStyle().layers;
@@ -479,17 +525,17 @@ function returnToPreviousMap() {
     // Add back the original fill layer
     map.setLayoutProperty('map-data-tract-fill', 'visibility', 'visible'),
 
-    // add borough outlines after the fill layer, so the outline is "on top" of the fill
-    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
+        // add borough outlines after the fill layer, so the outline is "on top" of the fill
+        map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
 
-    // Add a layer for highlighting the clicked tract polygon
-    map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
+        // Add a layer for highlighting the clicked tract polygon
+        map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
 
-    // Zoom out to level 11
-    map.flyTo({
-        center: [-73.96143, 40.73941], // starting position [lng, lat]
-        zoom: 11 // starting zoom
-    });
+        // Zoom out to level 11
+        map.flyTo({
+            center: [-73.96143, 40.73941], // starting position [lng, lat]
+            zoom: 11 // starting zoom
+        });
 
     // Show the original sidebar
     document.getElementById('sidebar').style.display = 'block';
@@ -497,22 +543,60 @@ function returnToPreviousMap() {
     // Update the sidebar content to the original content
     document.getElementById('sidebar').innerHTML = `
                 <div class="header">
-                    <h1>Local Law 97 & Rent Burden</h1>
-                    <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
+                    <h1>NYC Local Law 97 & Rent Burden</h1>
+                    <h2>Where might energy efficiency threaten housing affordability?</h2>
                 </div>
 
-                <p>While <a
-                    href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law 97</a> (LL97) is critical to decarbonizing NYC's housing stock, areas with both high rent burden and
-                    high greenhouse gas emissions might be at risk of housing instability if property owners pass on compliance costs
-                    to already-burdened tenants.</p>
+                <p>This map categorizes census tracts with housing buildings covered by Local Law 97 (LL97) by their level of rent burden and median greenhouse gas emissions, and lets you explore tracts that are both highly rent-burdened and emitting above the law's cap.</p>
 
-                <p>To help identify areas in need of resources and support, this map categorizes census tracts with LL97-covered <strong>multifamily housing buildings</strong> into quadrants by their level of rent burden
-                    and compliance under both the 2024 and 2030 LL97 greenhouse gas intensity caps. See the About and Methods & Data tabs for more information.</p>
+                <div class="accordion" id="sidebarAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                <strong>Why is this important?</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse"
+                            data-bs-parent="#sidebarAccordion">
+                            <div class="accordion-body">
+                                In 2019, NYC enacted <a
+                                    href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">LL97</a> to reduce carbon emissions by phasing in carbon caps through 2050, with fines for
+                                non-compliant buildings. While LL97 is critical to decarbonizing NYC, some fear its
+                                effects on
+                                housing affordability. Owners of high-emission housing may pass on the cost of cutting
+                                emissions to
+                                tenants through higher rents and fees. Areas where tenants are already highly
+                                rent-burdened could
+                                experience housing instability if tenants are then priced out and forced to move.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <strong>What does this map do?</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#sidebarAccordion">
+                            <div class="accordion-body">
+                                Census tracts are categorized into quadrants by whether the majority of tenants are rent-burdened and whether the median Greenhouse Gas Intensity (the kilograms of CO2 emitted per square foot of the property, kgCO2/sqft) among multifamily housing buildings is above the law's cap. Housing in <strong class="orange">orange</strong> tracts is both highly rent burdened emitting above the carbon cap on average, indicating areas where additional support and resources might be needed. You can click on these areas to see more detail on the buildings and emissions. Since LL97 phases in more stringent caps over time, you can view the map under either the current 2024 carbon-cap or the upcoming 2030 carbon-cap. 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p></p>
                 <p> <strong>Select a LL97 Housing Carbon-Cap-Year:</strong> </p>
-                <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
-                <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>  
-                <p></p>              
-                <p> <strong> Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report at the property lot level.</strong></p>
+                <button class="layer-button active" data-variable="qd_2024"
+                    onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
+                <button class="layer-button" data-variable="qd_2030"
+                    onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>
+                <p></p>
+                <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to
+                    display a pop-up, or <strong>click an <strong class="orange">orange</strong> tract</strong> to see
+                    detailed information on its housing lots.</p>
  `;
 
     // Move the highlighted tract layer above the fill layer

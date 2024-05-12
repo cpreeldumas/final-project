@@ -2,15 +2,17 @@
 <html>
 
 <head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <meta charset="utf-8">
-    <title>LL97 Housing Equity Map</title>
+    <title>LL97 & Rent Burden Map</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
+
 <body>
     <div id="main-container">
-        
+
         <div class="nav-links">
             <button class="nav-link" onclick="openAboutPopup()">About</button>
             <button class="nav-link" onclick="openMethodsPopup()">Methods & Data</button>
@@ -37,22 +39,60 @@
         <div id="content-container">
             <div id="sidebar">
                 <div class="header">
-                    <h1>Local Law 97 & Rent Burden</h1>
-                    <h2>The Clash of Energy Efficiency and Housing Affordability</h2>
+                    <h1>NYC Local Law 97 & Rent Burden</h1>
+                    <h2>Where might energy efficiency threaten housing affordability?</h2>
                 </div>
 
-                <p>While <a
-                    href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">Local Law 97</a> (LL97) is critical to decarbonizing NYC's housing stock, areas with both high rent burden and
-                    high greenhouse gas emissions might be at risk of housing instability if property owners pass on compliance costs
-                    to already-burdened tenants.</p>
+                <p>This map categorizes census tracts with housing buildings covered by Local Law 97 (LL97) by their level of rent burden and median greenhouse gas emissions, and lets you explore tracts that are both highly rent-burdened and emitting above the law's cap.</p>
 
-                <p>To help identify areas in need of resources and support, this map categorizes census tracts with LL97-covered <strong>multifamily housing buildings</strong> into quadrants by their level of rent burden<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Here, rent-burdened tracts are tracts where over half of the population is rent-burdened, i.e., paying over 30% of their income on rent."></i>
-                    and compliance under both the 2024 and 2030 LL97 greenhouse gas intensity<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Greenhouse Gas Intensity is the total direct and indirect greenhouse gases emitted due to energy used per gross square foot of the property, reported in kilograms of carbon dioxide equivalent per square foot (kgCO2/sqft)."></i> caps. See the About and Methods & Data tabs for more information.</p>
-                <p> <strong>Select a LL97 Housing Carbon-Cap-Year:<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top"  data-bs-content="Local Law 97 phases in carbon caps through 2050, with carbon caps becoming more stringent over time. Carbon caps also vary by property type. The caps below are for multifamily housing properties."></i></strong> </p>
-                <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
-                <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>  
-                <p></p>              
-                <p> <strong> Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report at the property lot level.</strong></p>
+                <div class="accordion" id="sidebarAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                <strong>Why is this important?</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse"
+                            data-bs-parent="#sidebarAccordion">
+                            <div class="accordion-body">
+                                In 2019, NYC enacted <a
+                                    href="https://www.nyc.gov/site/sustainablebuildings/ll97/local-law-97.page">LL97</a> to reduce carbon emissions by phasing in carbon caps through 2050, with fines for
+                                non-compliant buildings. While LL97 is critical to decarbonizing NYC, some fear its
+                                effects on
+                                housing affordability. Owners of high-emission housing may pass on the cost of cutting
+                                emissions to
+                                tenants through higher rents and fees. Areas where tenants are already highly
+                                rent-burdened could
+                                experience housing instability if tenants are then priced out and forced to move.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                <strong>What does this map do?</strong>
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#sidebarAccordion">
+                            <div class="accordion-body">
+                                Census tracts are categorized into quadrants by whether the majority of tenants are rent-burdened and whether the median Greenhouse Gas Intensity (the kilograms of CO2 emitted per square foot of the property, kgCO2/sqft) among multifamily housing buildings is above the law's cap. Housing in <strong class="orange">orange</strong> tracts is both highly rent burdened emitting above the carbon cap on average, indicating areas where additional support and resources might be needed. You can click on these areas to see more detail on the buildings and emissions. Since LL97 phases in more stringent caps over time, you can view the map under either the current 2024 carbon-cap or the upcoming 2030 carbon-cap. 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <p></p>
+                <p> <strong>Select a LL97 Housing Carbon-Cap-Year:</strong> </p>
+                <button class="layer-button active" data-variable="qd_2024"
+                    onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
+                <button class="layer-button" data-variable="qd_2030"
+                    onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>
+                <p></p>
+                <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to
+                    display a pop-up, or <strong>click an <strong class="orange">orange</strong> tract</strong> to see
+                    detailed information on its housing lots.</p>
             </div>
 
             <div id="map"></div>
@@ -65,8 +105,11 @@
         </div>
     </div>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.0/mapbox-gl.js"></script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <script src="https://kit.fontawesome.com/b5ad841b09.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
