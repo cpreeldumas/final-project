@@ -218,7 +218,7 @@ map.on('load', function () {
             // Update the sidebar content
             document.getElementById('sidebar').innerHTML = `
             <div class="header">
-                <h1>Lot View</h1>
+                <h1>Property Lot View</h1>
                 <h2>Showing Lots in High Rent Burden & High Emmission Tracts</h2>
             </div>
             <p>Click a lot to display its data report below:</p>
@@ -292,7 +292,7 @@ map.on('load', function () {
         // Construct the HTML table dynamically
         const tableHTML = `
             <div class="header">
-                <h1>Lot View</h1>
+                <h1>Property Lot View</h1>
                 <p>
                     Your Selection:<br>
                     <strong>Neighborhood:</strong> ${bblProperties.NTAName}<br>
@@ -301,44 +301,45 @@ map.on('load', function () {
             ${roadViewHTML} <!-- Add roadViewHTML here -->
                 <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing. ${complianceMessage}</p>
             </div>
-            <div style="background-color: #FEEBC8; border-radius: 10px; padding: 6px;">
+            <div style="background-color: #FEEBC8; border-radius: 10px; padding: 4px;">
                 <table style="border-collapse: collapse;">
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;"><b>GHG Intensity:</b></td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;"><b>${bblProperties.ghg} kgCO2/sqft</b></td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;"><b>GHG Intensity:</b></td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;"><b>${bblProperties.ghg} kgCO2/sqft</b></td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Energy Star Score:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${bblProperties.ess} out of 100</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Energy Star Score:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">${bblProperties.ess} out of 100</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Residential Units:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${bblProperties.unts_rs}</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Residential Units:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">${bblProperties.unts_rs}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Year Built:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${bblProperties.year}</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Year Built:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">${bblProperties.year}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Square Feet:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${numeral(bblProperties.gfa_chr).format('0,0')}</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Square Feet:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">${numeral(bblProperties.gfa_chr).format('0,0')}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Tract Rent-Burdened:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">${bblProperties.rb_c}%</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Tract Rent-Burdened:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">${bblProperties.rb_c}%</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Tract Median Rent:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">$${bblProperties.mdrntE_}</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Tract Median Rent:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">$${bblProperties.mdrntE_}</td>
                     </tr>
                     <tr>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">Tract Median Income:</td>
-                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 6px; font-size: smaller;">$${bblProperties.mdncmE_}</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">Tract Median Income:</td>
+                        <td style="width: 200px; border-bottom: 1px solid #F89638; padding: 2px; font-size: smaller;">$${bblProperties.mdncmE_}</td>
                     </tr>
                 </table>
             </div>
-
             <p></p>
+            <p>Are you the building owner? Get resources and guidance on decarbonization at <a
+            href="https://accelerator.nyc/">NYC Accelerator</a>.</p>
             <button class ="button-4" onclick="returnToPreviousMap()">Return to Previous Map</button>
         `;
 
@@ -480,10 +481,8 @@ function returnToPreviousMap() {
             ],
             'fill-opacity': 0.9
         }
-    },
-    labelLayerId
-);
-
+    }
+    );
 
     // add borough outlines after the fill layer, so the outline is "on top" of the fill
     map.addLayer({
@@ -532,17 +531,17 @@ function returnToPreviousMap() {
                     high greenhouse gas emissions might be at risk of housing instability if property owners pass on compliance costs
                     to already-burdened tenants.</p>
 
-                <p>This map categorizes census tracts with LL97-covered <strong>multifamily housing buildings</strong> into quadrants by their level of rent burden<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Here, rent-burdened tracts are tracts where over half of the population is rent-burdened, i.e., paying over 30% of their income on rent."></i>
-                    and compliance with LL97 greenhouse gas intensity caps.<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Greenhouse Gas Intensity is the total direct and indirect greenhouse gases emitted due to energy used per gross square foot of the property, reported in kilograms of carbon dioxide equivalent per square foot (kgCO2/sqft)."></i> Grey areas in the map have no LL97-covered multifamily housing. See the About and Methods & Data tabs for more information.</p>
-                <p> <strong>Select a LL97 Housing Carbon-Cap-Year:<i class="fa-solid fa-circle-info fa-xs superscript"  data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Local Law 97 phases in carbon caps through 2050, with carbon caps becoming more stringent over time. Carbon caps also vary by property type. The caps below are for multifamily housing properties."></i></strong> </p>
+                <p>To help identify areas in need of resources and support, this map categorizes census tracts with LL97-covered <strong>multifamily housing buildings</strong> into quadrants by their level of rent burden
+                    and compliance under both the 2024 and 2030 LL97 greenhouse gas intensity caps. See the About and Methods & Data tabs for more information.</p>
+                <p> <strong>Select a LL97 Housing Carbon-Cap-Year:</strong> </p>
                 <button class="layer-button active" data-variable="qd_2024" onclick="changeLayer('qd_2024')"><strong>2024:</strong> 6.75 kgCO2/sqft</button>
                 <button class="layer-button" data-variable="qd_2030" onclick="changeLayer('qd_2030')"><strong>2030:</strong> 3.35 kgCO2/sqft</button>  
                 <p></p>              
-                <p> <strong> Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report.</strong></p>
+                <p> <strong> Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to display a pop-up, or click an <strong class="orange">orange</strong> tract for a detailed report at the property lot level.</strong></p>
  `;
 
     // Move the highlighted tract layer above the fill layer
-    map.moveLayer('map-data-tract-fill', 'highlighted-tract');
+    map.moveLayer('map-data-tract-fill', 'borough-boundaries-line', 'highlighted-tract');
 
     // Reset the filter for the highlighted tract layer
     map.setFilter('highlighted-tract', ['==', 'GEOID', '']);

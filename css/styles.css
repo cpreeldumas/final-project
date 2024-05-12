@@ -72,7 +72,7 @@ body {
     top: 10px;
     left: 20px;
     z-index: 1;
-    width: 420px;
+    width: 430px;
     background: #fff;
     padding: 15px;
     border-radius: 10px;
@@ -211,7 +211,7 @@ body {
 }
 
 .yellow {
-    color: #f7d38d;
+    color: #f7c868;
 }
 
 .orange {
