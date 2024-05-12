@@ -1,17 +1,6 @@
-
-function openAboutPopup() {
-    document.getElementById("nav-about-popup").style.display = "block";
-    document.getElementById("nav-popup-overlay").style.display = "block";
-}
-
 function openMethodsPopup() {
     document.getElementById("nav-methods-popup").style.display = "block";
     document.getElementById("nav-popup-overlay").style.display = "block";
-}
-
-function closeAboutPopup() {
-    document.getElementById("nav-about-popup").style.display = "none";
-    document.getElementById("nav-popup-overlay").style.display = "none";
 }
 
 function closeMethodsPopup() {
@@ -53,12 +42,6 @@ map.on('load', function () {
         map.setPaintProperty(layer.id, 'text-halo-color', 'rgba(0, 0, 0, 0)'); // Remove stroke
     });
 
-     // add a geojson source for the NYC buffer mask
-     map.addSource('nyc-buffer-mask', {
-        type: 'geojson',
-        data: 'data/nyc-buffer-mask.geojson',
-    })
-
     // add a geojson source for the borough boundaries
     map.addSource('borough-boundaries', {
         type: 'geojson',
@@ -88,17 +71,6 @@ map.on('load', function () {
     const labelLayerId = layers.find(
         (layer) => layer.type === 'symbol' && layer.layout['text-field']
     ).id;
-
-    // add a NYC buffer mask to subdue non-NYC areas
-    map.addLayer({
-        id: 'nyc-buffer-mask-fill',
-        type: 'fill',
-        source: 'nyc-buffer-mask',
-        paint: {
-            'fill-color': '#292929',
-            'fill-opacity': 0.2
-        }
-    })
 
 
     // first add the fill layer, using a match expression to give each a unique color based on its quadrant property

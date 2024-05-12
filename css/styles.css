@@ -177,6 +177,7 @@ body {
 
 .nav-popup-content {
     position: relative;
+    font-size: 14px; 
 }
 
 .nav-popup-close {
@@ -307,10 +308,10 @@ body {
   .superscript { position: relative; top: -0.3em; font-size: 100%; }
 
 .accordion-button {
-    font-size: 14px; /* Adjust the font size as needed */
-    padding: 0.5rem 0.5rem; /* Adjust the padding as needed */
+    font-size: 14px; 
+    padding: 0.5rem 0.5rem; 
 }
 
 .accordion-body {
-    font-size: 14px; /* Adjust the font size as needed */
+    font-size: 14px; 
 }

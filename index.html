@@ -14,24 +14,39 @@
     <div id="main-container">
 
         <div class="nav-links">
-            <button class="nav-link" onclick="openAboutPopup()">About</button>
-            <button class="nav-link" onclick="openMethodsPopup()">Methods & Data</button>
+            <button class="nav-link" onclick="openMethodsPopup()">Data & Methods</button>
             <a class="nav-link" href="https://github.com/cpreeldumas/final-project" target="_blank"
                 rel="noopener noreferrer">Source Code</a>
         </div>
 
-        <div id="nav-about-popup" class="nav-popup">
-            <div class="nav-popup-content">
-                <span class="nav-popup-close" onclick="closeAboutPopup('nav-about-popup')">&times;</span>
-                <p class="title"> About the LL97 Housing Equity Map</p>
-                <p>Add about text.</p>
-            </div>
-        </div>
         <div id="nav-methods-popup" class="nav-popup">
             <div class="nav-popup-content">
                 <span class="nav-popup-close" onclick="closeMethodsPopup('nav-methods-popup')">&times;</span>
-                <p class="title"> Methods & Data</p>
-                <p>Add methodology text.</p>
+                <h2>Data Sources:</h2>
+                <p>
+                    Greenhouse gas emissions and energy star score data is provided by the Mayor's Office of Climate and Environmental Justice (MOCEJ) under NYC Local Law 84, and can be downloaded through <a href="https://data.cityofnewyork.us/Environment/Energy-and-Water-Data-Disclosure-for-Local-Law-84-/7x5e-2fxh/about_data">NYC Open Data.</a>
+                </p>
+                <p>
+                    Census tract-level rent burden, median income, and median rent data is from the 2022 American Community Survey (ACS) 5-year Estimates, available through <a href="https://walker-data.com/tidycensus/">tidycensus.</a>
+                </p>
+                <p>
+                    Building-level polygons and property characteristics are from the Department of City Planning's <a href="https://www.nyc.gov/site/planning/data-maps/open-data/dwn-pluto-mappluto.page">MapPLUTO.</a>
+                </p>
+                <hr>
+                <h2>Methods:</h2>
+                <p>Local Law 84 data is filtered to properties where the self-reported main use is multifamily housing, and the property is listed in NYC Sustainable Building's list of <a href="https://www.nyc.gov/site/sustainablebuildings/requirements/covered-buildings.page">Local Law 97 Covered Buildings</a>. The law generally covers buildings over 25,000 square feet. Median Greenhouse Gas Intensity is then calculated at the Census Tract level and compared to the 2024 and 2030 Local Law 97 Carbon Caps, provided by the <a href="https://www.urbangreencouncil.org/what-we-do/driving-innovative-policy/ll97/">Urban Green Council.</a></p>
+                <p>Percent rent-burdened in a tract is calculated using table <a href="https://data.census.gov/table/ACSDT5Y2021.B25070">B25070</a> of the ACS, Gross Rent as a Percentage of Household Income in the Past 12 Months. Highly rent-burdened tracts are defined as those where 50% of the population is rent-burdened.</p>
+                <hr>
+                <h2>Definitions:</h2>
+                <p>
+                    <strong>Greenhouse Gas (GHG) Intensity:</strong> The total direct and indirect greenhouse gases emitted due to energy used by the property per gross square foot of the property, reported in kilograms of carbon dioxide equivalent per square foot (kgCO2e/sqft).
+                </p>
+                <p>
+                    <strong>Rent-Burdened</strong>: Paying over 30% of household income on gross rent.
+                </p>
+                <p>
+                    <strong>Energy Star Score:</strong> A 1-to-100 percentile ranking for specified building types (here, multifamily housing) with 100 being the best score and 50 the median. It compares the energy performance of a building against the national Commercial Buildings Energy Consumption Survey (CBECS) database, and independent industry surveys for that building type. This rating is normalized for weather and building attributes in order to obtain a measure of efficiency. 
+                </p>
             </div>
         </div>
         <div id="nav-popup-overlay" class="nav-popup-overlay"></div>
@@ -77,7 +92,7 @@
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#sidebarAccordion">
                             <div class="accordion-body">
-                                Census tracts are categorized into quadrants by whether the majority of tenants are rent-burdened and whether the median Greenhouse Gas Intensity (the kilograms of CO2 emitted per square foot of the property, kgCO2/sqft) among multifamily housing buildings is above the law's cap. Housing in <strong class="orange">orange</strong> tracts is both highly rent burdened emitting above the carbon cap on average, indicating areas where additional support and resources might be needed. You can click on these areas to see more detail on the buildings and emissions. Since LL97 phases in more stringent caps over time, you can view the map under either the current 2024 carbon-cap or the upcoming 2030 carbon-cap. 
+                                Census tracts are categorized into quadrants by whether the majority of tenants are rent-burdened<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Rent-burden is commonly defined as paying over 30% of your income on rent."></i> and whether the median Greenhouse Gas Intensity<i class="fa-solid fa-circle-info fa-xs superscript" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="The kilograms of CO2 emitted per square foot of the property (kgCO2/sqft)."></i> among multifamily housing buildings is above the law's cap. Housing in <strong class="orange">orange</strong> tracts is both highly rent burdened emitting above the carbon cap on average, indicating areas where additional support and resources might be needed. You can click on these areas to see more detail on the buildings and emissions. Since LL97 phases in more stringent caps over time, you can view the map under either the current 2024 carbon-cap or the upcoming 2030 carbon-cap. 
                             </div>
                         </div>
                     </div>
