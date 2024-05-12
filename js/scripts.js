@@ -138,6 +138,51 @@ map.on('load', function () {
         filter: ['==', 'bbl', ''] // Initially filter to none
     });
 
+    // Add a layer for bbl choropleth
+    map.addLayer({
+        id: 'map-data-bbl-fill',
+        type: 'fill',
+        source: 'map-data-bbl',
+        layout: { 'visibility': 'none' }, // initially invisible
+        paint: {
+            'fill-color': [ // use an expression for data-driven styling
+                'interpolate',
+                ['linear'],
+                ['get', "ghg"],
+                0,
+                '#52BA4F',
+                3.3,
+                '#9AD798',
+                6.6,
+                '#E7EBC5',
+                9.9,
+                '#F6998C',
+                13.3,
+                '#F47266',
+                16.3,
+                '#F15B52'
+            ],
+            'fill-opacity': 0.9
+        }
+    },
+        labelLayerId
+    );
+
+    // Add a layer for atrisk tract boundaries
+    map.addLayer({
+        id: 'map-atrisk-tracts-lines',
+        type: 'line',
+        source: 'map-atrisk-tracts',
+        layout: { 'visibility': 'none' }, // initially invisible
+        paint: {
+            'line-color': '#F89638',
+            'line-width': 0.4
+
+        }
+    },
+        labelLayerId
+    )
+
     // When a click event occurs on a feature in the states layer,
     // open a popup at the location of the click, with description
     map.on('click', 'map-data-tract-fill', (e) => {
@@ -160,60 +205,24 @@ map.on('load', function () {
                 zoom: 15 // Adjust zoom level as needed
             });
 
-            // Remove the current fill layer
-            map.removeLayer('map-data-tract-fill');
+            // Make the tract fill layer invisible
+            map.setLayoutProperty('map-data-tract-fill', 'visibility', 'none'),
 
-            // Remove the highlighted tract layer
-            map.removeLayer('highlighted-tract');
+            // Make the highlighted tract layer invisible
+            map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
 
             // Add tract boundaries
-            map.addLayer({
-                id: 'map-atrisk-tracts-lines',
-                type: 'line',
-                source: 'map-atrisk-tracts',
-                paint: {
-                    'line-color': '#F89638',
-                    'line-width': 0.4
-
-                }
-            },
-                labelLayerId
-            )
+            map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
 
             // Highlight the clicked tract line
+            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
             map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
 
             // Call the function to update the legend
             updateLegend('images/legend-inner.png');
 
-            // Add the new fill layer using map_tract_bbl.geojson
-            map.addLayer({
-                id: 'map-data-bbl-fill',
-                type: 'fill',
-                source: 'map-data-bbl',
-                paint: {
-                    'fill-color': [ // use an expression for data-driven styling
-                        'interpolate',
-                        ['linear'],
-                        ['get', "ghg"],
-                        0,
-                        '#52BA4F',
-                        3.3,
-                        '#9AD798',
-                        6.6,
-                        '#E7EBC5',
-                        9.9,
-                        '#F6998C',
-                        13.3,
-                        '#F47266',
-                        16.3,
-                        '#F15B52'
-                    ],
-                    'fill-opacity': 0.9
-                }
-            },
-                labelLayerId
-            );
+            // Show the new bbl choropleth fill layer
+            map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'visible'),
 
             // Update the sidebar content
             document.getElementById('sidebar').innerHTML = `
@@ -253,13 +262,15 @@ map.on('load', function () {
             return; // No features found in map-data-bbl layer, exit early
         }
 
-        // Remove the filter for the previously highlighted tract boundary layer
-        map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', '']);
-
+        // Hide any previously highlighted tract boundary layer
+        map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
+        
         // Highlight the tract boundary where the clicked bbl is located
+        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
         map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
 
         // Highlight the clicked bbl polygon
+        map.setLayoutProperty('highlighted-bbl', 'visibility', 'visible'),
         map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
 
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
@@ -449,11 +460,12 @@ function updateMapLayer() {
 }
 
 function returnToPreviousMap() {
-    // Remove the current fill layer
-    map.removeLayer('map-data-bbl-fill');
-    map.removeLayer('borough-boundaries-line');
-    map.removeLayer('map-atrisk-tracts-lines');
-    map.removeLayer('highlighted-bbl');
+    // Hide bbl-level layers
+    map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'none'),
+    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
+    map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
+    map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
+    map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
 
     // Call the function to update the legend back to the original one
     updateLegend('images/legend.png');
@@ -465,50 +477,13 @@ function returnToPreviousMap() {
     ).id;
 
     // Add back the original fill layer
-    map.addLayer({
-        id: 'map-data-tract-fill',
-        type: 'fill',
-        source: 'map-data-tract',
-        paint: {
-            'fill-color': [
-                'match',
-                ['get', 'qd_2024'],
-                'stable_rentb', '#757FBD',
-                'stable', '#BDC4E3',
-                'atrisk', '#F89638',
-                'monitor', '#F9E2B4',
-                '#6e6e6e'
-            ],
-            'fill-opacity': 0.9
-        }
-    }
-    );
+    map.setLayoutProperty('map-data-tract-fill', 'visibility', 'visible'),
 
     // add borough outlines after the fill layer, so the outline is "on top" of the fill
-    map.addLayer({
-        id: 'borough-boundaries-line',
-        type: 'line',
-        source: 'borough-boundaries',
-        paint: {
-            'line-color': '#ccc'
-        }
-    }
-    );
+    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
 
     // Add a layer for highlighting the clicked tract polygon
-    map.addLayer({
-        id: 'highlighted-tract',
-        type: 'line',
-        source: 'map-data-tract',
-        paint: {
-            'line-color': 'white',
-            'line-width': 2,
-            'line-opacity': 0.9,
-            'line-blur': 0.1
-        },
-        filter: ['==', 'GEOID', ''] // Initially filter to none
-    });
-
+    map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
 
     // Zoom out to level 11
     map.flyTo({
