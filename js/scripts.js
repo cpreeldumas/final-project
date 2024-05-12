@@ -488,6 +488,10 @@ function returnToPreviousMap() {
         // Call the function to update the legend back to the original one
         updateLegend('images/legend.png');
 
+        // Always start at 2024 year
+        currentVariable = 'qd_2024';
+        updateMapLayer();
+
     // Create LabelLayerID for 3D Buildings
     const layers = map.getStyle().layers;
     const labelLayerId = layers.find(
@@ -553,7 +557,7 @@ function returnToPreviousMap() {
                         </h2>
                         <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#sidebarAccordion">
                             <div class="accordion-body">
-                                Census tracts are categorized into quadrants by whether the majority of tenants are rent-burdened and whether the median Greenhouse Gas Intensity (the kilograms of CO2 emitted per square foot of the property, kgCO2/sqft) among multifamily housing buildings is above the law's cap. Housing in <strong class="orange">orange</strong> tracts is both highly rent burdened emitting above the carbon cap on average, indicating areas where additional support and resources might be needed. You can click on these areas to see more detail on the buildings and emissions. Since LL97 phases in more stringent caps over time, you can view the map under either the current 2024 carbon-cap or the upcoming 2030 carbon-cap. 
+                                Census tracts are categorized into quadrants by whether the majority of tenants are rent-burdened and whether the median Greenhouse Gas Intensity among multifamily housing buildings is above the law's cap. Housing in <strong class="orange">orange</strong> tracts is both highly rent burdened and emitting above the carbon cap on average, indicating areas where additional support and resources might be needed. Since LL97 phases in more stringent caps over time, you can view the map under either the current 2024 carbon-cap or the upcoming 2030 carbon-cap. 
                             </div>
                         </div>
                     </div>
@@ -568,7 +572,8 @@ function returnToPreviousMap() {
                 <p></p>
                 <p>Click a <strong class="purple">purple</strong> or <strong class="yellow">yellow</strong> tract to
                     display a pop-up, or <strong>click an <strong class="orange">orange</strong> tract</strong> to see
-                    detailed information on its housing lots.</p>
+                    to see more detail on the buildings and emissions in that tract.</p>
+            </div>
  `;
 
     // Move the highlighted tract layer above the fill layer
