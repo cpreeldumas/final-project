@@ -172,7 +172,9 @@ body {
     padding: 20px;
     border-radius: 5px;
     z-index: 1000;
-    width: 700px
+    width: 750px;
+    max-height: 80vh; /* Set maximum height to 80% of the viewport height */
+    overflow-y: auto; /* Add vertical scrollbar when content overflows */
 }
 
 .nav-popup-content {
