@@ -76,6 +76,8 @@ body {
     background: #fff;
     padding: 15px;
     border-radius: 10px;
+    max-height: 95vh; /* Set maximum height to 80% of the viewport height */
+    overflow-y: auto; /* Add vertical scrollbar when content overflows */
     -webkit-box-shadow: 0px 0px 2px 2px rgb(116 116 116)
     -moz-box-shadow: 0px 0px 2px 2px rgb(116 116 116)
     box-shadow: 0px 0px 2px 2px rgb(116 116 116)

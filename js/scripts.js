@@ -113,7 +113,7 @@ map.on('load', function () {
         source: 'map-data-tract',
         paint: {
             'line-color': '#F89638',
-            'line-width': 3,
+            'line-width': 4,
             'line-opacity': 0.8,
             'line-blur': 0.3
         },
@@ -145,7 +145,7 @@ map.on('load', function () {
         source: 'map-data-bbl',
         paint: {
             'line-color': 'white',
-            'line-width': 2,
+            'line-width': 3,
             'line-opacity': 0.8,
             'line-blur': 0.3
         },
