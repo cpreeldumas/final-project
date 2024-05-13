@@ -12,9 +12,8 @@ Users land on a map of color-coded NYC Census tracts and can read about the back
 # Map Interactivity
 When a user clicks on an orange tract (categorized as both highly rent-burdened and high emissions), the map zooms into the area and displays building-level polygons for multifamily housing buildings in the tract. Users can then click on any building and see its data in the sidebar, including a street view, a summary of its compliance under LL97, and detailed data on emissions and rent burden at the property level. These update dynamically based on the building selection.
 
-![Screenshot 2024-05-12 at 8 38 24 PM](https://github.com/cpreeldumas/final-project/assets/52207575/1acf358e-ec13-4470-a586-8368598831a9)
+![Screenshot 2024-05-12 at 11 20 53 PM](https://github.com/cpreeldumas/final-project/assets/52207575/7871fdec-3878-4e1b-890a-756822035b1f)
 
 If users zoom in closely, 3D Buildings become visible:
 
-![Screenshot 2024-05-12 at 8 42 56 PM](https://github.com/cpreeldumas/final-project/assets/52207575/a06835dc-ec21-4a76-ab79-d836d094bdb9)
-
+![Screenshot 2024-05-12 at 11 23 03 PM](https://github.com/cpreeldumas/final-project/assets/52207575/e38b6cfb-fb90-4b73-838d-71cbe6782e57)
