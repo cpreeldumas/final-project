@@ -223,15 +223,15 @@ map.on('load', function () {
             // Make the tract fill layer invisible
             map.setLayoutProperty('map-data-tract-fill', 'visibility', 'none'),
 
-            // Make the highlighted tract layer invisible
-            map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
+                // Make the highlighted tract layer invisible
+                map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
 
-            // Add tract boundaries
-            map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
+                // Add tract boundaries
+                map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
 
-            // Highlight the clicked tract line
-            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
-            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
+                // Highlight the clicked tract line
+                map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
+                map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
 
             // Call the function to update the legend
             updateLegend('images/legend-inner.png');
@@ -239,8 +239,8 @@ map.on('load', function () {
             // Show the new bbl choropleth fill layer
             map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'visible'),
 
-            // Update the sidebar content
-            document.getElementById('sidebar').innerHTML = `
+                // Update the sidebar content
+                document.getElementById('sidebar').innerHTML = `
             <div class="header">
                 <h1>Property Lot View</h1>
             </div>
@@ -286,13 +286,13 @@ map.on('load', function () {
         // Hide any previously highlighted tract boundary layer
         map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
 
-        // Highlight the tract boundary where the clicked bbl is located
-        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
-        map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
+            // Highlight the tract boundary where the clicked bbl is located
+            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
+            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
 
         // Highlight the clicked bbl polygon
         map.setLayoutProperty('highlighted-bbl', 'visibility', 'visible'),
-        map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
+            map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
 
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
         const bblProperties = bblData[0].properties;
@@ -321,6 +321,16 @@ map.on('load', function () {
             complianceMessage = "It is noncompliant under <strong>both the 2024 and 2030 caps.</strong>";
         }
 
+        // Determine pct diff sentence based on negative or positive
+        let pctdiffSentence = "";
+        if (bblProperties.pct_df_ < 0) {
+            pctdiffSentence = `<b>${Math.abs(bblProperties.pct_df_)}% below</b>`;
+        } else if (bblProperties.pct_df_ > 0) {
+            pctdiffSentence = `<b>${bblProperties.pct_df_}% above</b>`;
+        } else {
+            pctdiffSentence = `<b>${bblProperties.pct_df_}% of</b>`;
+        }
+
         // Construct the HTML table dynamically
         const tableHTML = `
             <div class="header">
@@ -332,7 +342,7 @@ map.on('load', function () {
                     ${e.features[0].properties.NAME}
                 </p>
             ${roadViewHTML} <!-- Add roadViewHTML here -->
-                <p>This lot's GHG Intensity is <b>${bblProperties.pct_df_}%</b> of the city average for multifamily housing. ${complianceMessage}</p>
+                <p>This lot's GHG Intensity is ${pctdiffSentence} the city average for multifamily housing. ${complianceMessage}</p>
             </div>
             <div style="background-color: #FEEBC8; border-radius: 10px; padding: 4px;">
                 <table style="border-collapse: collapse;">
@@ -485,13 +495,13 @@ function updateMapLayer() {
 function returnToPreviousMap() {
     // Hide bbl-level layers
     map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'none'),
-    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
-    map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
-    map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
-    map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
+        map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
+        map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
+        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
+        map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
 
-    // Call the function to update the legend back to the original one
-    updateLegend('images/legend.png');
+        // Call the function to update the legend back to the original one
+        updateLegend('images/legend.png');
 
     // Always start at 2024 year
     currentVariable = 'qd_2024';
@@ -506,17 +516,17 @@ function returnToPreviousMap() {
     // Add back the original fill layer
     map.setLayoutProperty('map-data-tract-fill', 'visibility', 'visible'),
 
-    // add borough outlines after the fill layer, so the outline is "on top" of the fill
-    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
+        // add borough outlines after the fill layer, so the outline is "on top" of the fill
+        map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
 
-    // Add a layer for highlighting the clicked tract polygon
-    map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
+        // Add a layer for highlighting the clicked tract polygon
+        map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
 
-    // Zoom out to level 11
-    map.flyTo({
+        // Zoom out to level 11
+        map.flyTo({
             center: [-73.97997, 40.72062], // starting position [lng, lat]
             zoom: 10 // starting zoom
-    });
+        });
 
     // Show the original sidebar
     document.getElementById('sidebar').style.display = 'block';
