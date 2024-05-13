@@ -243,8 +243,10 @@ map.on('load', function () {
             document.getElementById('sidebar').innerHTML = `
             <div class="header">
                 <h1>Property Lot View</h1>
-                <h2>Showing LL97-Covered Multifamily Housing Lots in High Rent Burden & High Emission Tracts</h2>
             </div>
+            <p>
+                <strong>Showing LL97-covered multifamily housing lots in high rent burden & high emission tracts.</strong>
+            </p>
             <p>
                 You are in <strong class="orange">${e.features[0].properties.NAME}</strong>,<br>
                 <strong>Click a property lot to display its data report below:</strong>
