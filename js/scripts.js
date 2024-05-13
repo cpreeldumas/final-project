@@ -23,7 +23,7 @@ map.addControl(new mapboxgl.NavigationControl());
 
 // when the map is finished it's initial load, add sources and layers.
 map.on('load', function () {
-    
+
     // Identify layers for place, street, airports, parks, and landmarks labels
     const mbLayers = map.getStyle().layers;
     const labelLayers = mbLayers.filter(layer => {
@@ -73,7 +73,7 @@ map.on('load', function () {
     ).id;
 
 
-    // first add the fill layer, using a match expression to give each a unique color based on its quadrant property
+    // first add the fill layer, using a match expression to give each a color based on its quadrant property
     map.addLayer({
         id: 'map-data-tract-fill',
         type: 'fill',
@@ -106,7 +106,7 @@ map.on('load', function () {
         labelLayerId
     )
 
-    // Add a layer for highlighting the clicked AT RISK tract polygon
+    // Add a layer for highlighting the clicked AT RISK tract polygon, initially invisible
     map.addLayer({
         id: 'highlighted-tract-atrisk',
         type: 'line',
@@ -122,7 +122,7 @@ map.on('load', function () {
         labelLayerId
     );
 
-    // Add a layer for highlighting the clicked tract polygon
+    // Add a layer for highlighting the clicked tract polygon, initially invisible
     map.addLayer({
         id: 'highlighted-tract',
         type: 'line',
@@ -138,7 +138,7 @@ map.on('load', function () {
         labelLayerId
     );
 
-    // Add a layer for highlighting the clicked bbl polygon
+    // Add a layer for highlighting the clicked bbl polygon, initially invisible
     map.addLayer({
         id: 'highlighted-bbl',
         type: 'line',
@@ -152,7 +152,7 @@ map.on('load', function () {
         filter: ['==', 'bbl', ''] // Initially filter to none
     });
 
-    // Add a layer for bbl choropleth
+    // Add a layer for bbl choropleth, initially invisible
     map.addLayer({
         id: 'map-data-bbl-fill',
         type: 'fill',
@@ -182,7 +182,7 @@ map.on('load', function () {
         labelLayerId
     );
 
-    // Add a layer for atrisk tract boundaries
+    // Add a layer for atrisk tract boundaries, initially invisible
     map.addLayer({
         id: 'map-atrisk-tracts-lines',
         type: 'line',
@@ -197,8 +197,9 @@ map.on('load', function () {
         labelLayerId
     )
 
-    // When a click event occurs on a feature in the states layer,
-    // open a popup at the location of the click, with description
+    // When a click event occurs on a orange tract in the map-data-tract-fill layer,
+    // zoom to the location of the click and show new bbl layer, update sidebar
+    // otherwise, open a popup
     map.on('click', 'map-data-tract-fill', (e) => {
         const qd_2024 = e.features[0].properties.qd_2024;
         const qd_2030 = e.features[0].properties.qd_2030;
@@ -222,15 +223,15 @@ map.on('load', function () {
             // Make the tract fill layer invisible
             map.setLayoutProperty('map-data-tract-fill', 'visibility', 'none'),
 
-                // Make the highlighted tract layer invisible
-                map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
+            // Make the highlighted tract layer invisible
+            map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
 
-                // Add tract boundaries
-                map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
+            // Add tract boundaries
+            map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'visible'),
 
-                // Highlight the clicked tract line
-                map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
-                map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
+            // Highlight the clicked tract line
+            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
+            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', e.features[0].properties.GEOID]);
 
             // Call the function to update the legend
             updateLegend('images/legend-inner.png');
@@ -238,8 +239,8 @@ map.on('load', function () {
             // Show the new bbl choropleth fill layer
             map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'visible'),
 
-                // Update the sidebar content
-                document.getElementById('sidebar').innerHTML = `
+            // Update the sidebar content
+            document.getElementById('sidebar').innerHTML = `
             <div class="header">
                 <h1>Property Lot View</h1>
                 <h2>Showing LL97-Covered Multifamily Housing Lots in High Rent Burden & High Emission Tracts</h2>
@@ -273,6 +274,7 @@ map.on('load', function () {
         }
     });
 
+    // when a click event occurs on bbl fill, display new sidebar with road view, compliance message, and table
     map.on('click', 'map-data-bbl-fill', (e) => {
         const bblData = map.queryRenderedFeatures(e.point, { layers: ['map-data-bbl-fill'] });
         if (!bblData.length) {
@@ -282,13 +284,13 @@ map.on('load', function () {
         // Hide any previously highlighted tract boundary layer
         map.setLayoutProperty('highlighted-tract', 'visibility', 'none'),
 
-            // Highlight the tract boundary where the clicked bbl is located
-            map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
-            map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
+        // Highlight the tract boundary where the clicked bbl is located
+        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'visible'),
+        map.setFilter('highlighted-tract-atrisk', ['==', 'GEOID', bblData[0].properties.GEOID]);
 
         // Highlight the clicked bbl polygon
         map.setLayoutProperty('highlighted-bbl', 'visibility', 'visible'),
-            map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
+        map.setFilter('highlighted-bbl', ['==', 'bbl', e.features[0].properties.bbl]);
 
         // Extract relevant properties from the first feature (assuming only one feature is clicked)
         const bblProperties = bblData[0].properties;
@@ -310,11 +312,11 @@ map.on('load', function () {
         // Determine compliance message based on GHG value
         let complianceMessage = "";
         if (bblProperties.ghg < 3.35) {
-            complianceMessage = "It is compliant under both the 2024 cap and 2030 cap.";
+            complianceMessage = "It is compliant under <strong>both the 2024 cap and 2030 cap.</strong>";
         } else if (bblProperties.ghg < 6.75) {
-            complianceMessage = "It is compliant under only the 2024 cap, and will become noncompliant in 2030.";
+            complianceMessage = "It is compliant under <strong>only the 2024 cap, and will become noncompliant in 2030.</strong>";
         } else {
-            complianceMessage = "It is noncompliant under both the 2024 and 2030 caps.";
+            complianceMessage = "It is noncompliant under <strong>both the 2024 and 2030 caps.</strong>";
         }
 
         // Construct the HTML table dynamically
@@ -372,7 +374,7 @@ map.on('load', function () {
             <button class ="button-4" onclick="returnToPreviousMap()">Return to Previous Map</button>
         `;
 
-        // Update the sidebar with the table
+        // Update the sidebar
         document.getElementById('sidebar').innerHTML = tableHTML;
     });
 
@@ -401,8 +403,7 @@ map.on('load', function () {
         map.getCanvas().style.cursor = '';
     });
 
-
-
+    // ADD 3D Buildings
     // The 'building' layer in the Mapbox Streets
     // vector tileset contains building height data
     // from OpenStreetMap.
@@ -446,6 +447,7 @@ map.on('load', function () {
 
 })
 
+// function to update active year button
 let currentVariable = 'qd_2024';
 
 function changeLayer(variable) {
@@ -463,7 +465,7 @@ function changeLayer(variable) {
     updateMapLayer();
 }
 
-
+// function to change year layer based on button click
 function updateMapLayer() {
     // Update the map layer based on the current variable
     map.setPaintProperty('map-data-tract-fill', 'fill-color', [
@@ -477,20 +479,21 @@ function updateMapLayer() {
     ]);
 }
 
+// function to return to previous map when in BBL view
 function returnToPreviousMap() {
     // Hide bbl-level layers
     map.setLayoutProperty('map-data-bbl-fill', 'visibility', 'none'),
-        map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
-        map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
-        map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
-        map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
+    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'none'),
+    map.setLayoutProperty('map-atrisk-tracts-lines', 'visibility', 'none'),
+    map.setLayoutProperty('highlighted-tract-atrisk', 'visibility', 'none'),
+    map.setLayoutProperty('highlighted-bbl', 'visibility', 'none'),
 
-        // Call the function to update the legend back to the original one
-        updateLegend('images/legend.png');
+    // Call the function to update the legend back to the original one
+    updateLegend('images/legend.png');
 
-        // Always start at 2024 year
-        currentVariable = 'qd_2024';
-        updateMapLayer();
+    // Always start at 2024 year
+    currentVariable = 'qd_2024';
+    updateMapLayer();
 
     // Create LabelLayerID for 3D Buildings
     const layers = map.getStyle().layers;
@@ -501,17 +504,17 @@ function returnToPreviousMap() {
     // Add back the original fill layer
     map.setLayoutProperty('map-data-tract-fill', 'visibility', 'visible'),
 
-        // add borough outlines after the fill layer, so the outline is "on top" of the fill
-        map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
+    // add borough outlines after the fill layer, so the outline is "on top" of the fill
+    map.setLayoutProperty('borough-boundaries-line', 'visibility', 'visible'),
 
-        // Add a layer for highlighting the clicked tract polygon
-        map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
+    // Add a layer for highlighting the clicked tract polygon
+    map.setLayoutProperty('highlighted-tract', 'visibility', 'visible'),
 
-        // Zoom out to level 11
-        map.flyTo({
+    // Zoom out to level 11
+    map.flyTo({
             center: [-73.97997, 40.72062], // starting position [lng, lat]
             zoom: 10 // starting zoom
-        });
+    });
 
     // Show the original sidebar
     document.getElementById('sidebar').style.display = 'block';
@@ -582,6 +585,7 @@ function returnToPreviousMap() {
     map.setFilter('highlighted-tract', ['==', 'GEOID', '']);
 }
 
+// Update legend function
 function updateLegend(legendImage) {
     const legendContainer = document.querySelector('.legend-container');
     const legendText = legendContainer.querySelector('.legend-text');
