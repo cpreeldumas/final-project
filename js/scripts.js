@@ -12,7 +12,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY3ByZWVsZHVtYXMiLCJhIjoiY2x1bHZ0dGJ0MGw4bTJpb
 const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/dark-v11', // dark basemap
-    center: [-73.96143, 40.73941], // starting position [lng, lat]
+    center: [-73.97997, 40.72062], // starting position [lng, lat]
     zoom: 10, // starting zoom
 });
 
@@ -509,8 +509,8 @@ function returnToPreviousMap() {
 
         // Zoom out to level 11
         map.flyTo({
-            center: [-73.96143, 40.73941], // starting position [lng, lat]
-            zoom: 11 // starting zoom
+            center: [-73.97997, 40.72062], // starting position [lng, lat]
+            zoom: 10 // starting zoom
         });
 
     // Show the original sidebar
@@ -520,10 +520,9 @@ function returnToPreviousMap() {
     document.getElementById('sidebar').innerHTML = `
                 <div class="header">
                     <h1>NYC Local Law 97 & Rent Burden</h1>
-                    <h2>Where might energy efficiency threaten housing affordability?</h2>
                 </div>
 
-                <p>This map categorizes census tracts with housing buildings covered by Local Law 97 (LL97) by their level of rent burden and median greenhouse gas emissions, and lets you explore tracts that are both highly rent-burdened and emitting above the law's cap.</p>
+                <p>This map categorizes census tracts with housing covered by Local Law 97 (LL97) by their level of rent burden and median greenhouse gas emissions, and lets you explore tracts that are both highly rent-burdened and emitting above the law's cap.</p>
 
                 <div class="accordion" id="sidebarAccordion">
                     <div class="accordion-item">
