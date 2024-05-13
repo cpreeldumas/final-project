@@ -15,5 +15,6 @@ When a user clicks on an orange tract (categorized as both highly rent-burdened 
 ![Screenshot 2024-05-12 at 8 38 24 PM](https://github.com/cpreeldumas/final-project/assets/52207575/1acf358e-ec13-4470-a586-8368598831a9)
 
 If users zoom in closely, 3D Buildings become visible:
+
 ![Screenshot 2024-05-12 at 8 42 56 PM](https://github.com/cpreeldumas/final-project/assets/52207575/a06835dc-ec21-4a76-ab79-d836d094bdb9)
 
