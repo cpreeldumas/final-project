@@ -242,17 +242,17 @@ map.on('load', function () {
                 // Update the sidebar content
                 document.getElementById('sidebar').innerHTML = `
             <div class="header">
-                <h1>Property Lot View</h1>
+                <h1>Housing Lot View</h1>
             </div>
             <p>
                 <strong>Showing LL97-covered multifamily housing lots in high rent burden & high emission tracts.</strong>
             </p>
             <p>
                 You are in <strong class="orange">${e.features[0].properties.NAME}</strong>,<br>
-                <strong>Click a property lot to display its data report below:</strong>
+                <strong>Click a housing lot to display its data report below:</strong>
             </p>
             <p></p>
-            <button class ="button-4" onclick="returnToPreviousMap()">Return to Previous Tract-Level Map</button>
+            <button class ="button-4" onclick="returnToPreviousMap()">Return to Previous Map</button>
         `;
 
         } else {
@@ -334,7 +334,7 @@ map.on('load', function () {
         // Construct the HTML table dynamically
         const tableHTML = `
             <div class="header">
-                <h1>Property Lot View</h1>
+                <h1>Housing Lot View</h1>
                 <p>
                     Your Selection:<br>
                     <strong>Lot Address:</strong>  ${bblProperties.addrss_}, ${bblProperties.BoroNam}<br>
@@ -342,7 +342,7 @@ map.on('load', function () {
                     ${e.features[0].properties.NAME}
                 </p>
             ${roadViewHTML} <!-- Add roadViewHTML here -->
-                <p>This lot's GHG Intensity is ${pctdiffSentence} the city average for multifamily housing. ${complianceMessage}</p>
+                <p>This housing lot's GHG Intensity is ${pctdiffSentence} the city average for multifamily housing. ${complianceMessage}</p>
             </div>
             <div style="background-color: #FEEBC8; border-radius: 10px; padding: 4px;">
                 <table style="border-collapse: collapse;">
